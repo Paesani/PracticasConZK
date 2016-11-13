@@ -1,0 +1,16 @@
+<?page title="Manager" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <window xmlns:w="client" position="center, center" apply="org.test.zk.manager.CManagerController" title="Persona" border="normal" hflex="min">
+    <vlayout width="355px">
+    <listbox id="listboxpersons" width="100%" height="360px">
+    
+    </listbox>
+            <div id="buttoncontainer">
+                <button id="buttonadd" label="Añadir" style="float:right;margin-left:15px"></button>
+                <button id="buttonmodify" label="Modificar" style="float:right;margin-left:15px"></button>
+                <button id="buttondelete" label="Borrar" style="float:right;margin-left:15px"></button>
+            </div>
+    
+    </vlayout>
+    </window>
+</zk>

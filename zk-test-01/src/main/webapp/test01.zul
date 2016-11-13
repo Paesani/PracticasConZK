@@ -1,0 +1,14 @@
+<?page title="test 01" contentType="text/html;charset=UTF-8"?>
+<zk>
+ <window id="windowtest01" apply="org.test.zk.CTest01Controller" title="Chito es el mejor perro" border="normal">
+  <button id="buttontest01" label="Permitido cambiar el título"/>
+  <button id="buttontest02" label="Este botón no cambiará cuando si le hacen click"/>
+  <button id="buttontest03" label="Esconder"/>
+  <button id="buttontest04" label="Minimizar"/>
+  <button id="buttontest05" label="añadir números"/>
+  <button id="buttontest06" label="acá añadimos a la clase persona"/>
+  <button id="buttontest07" label="botón 7"/>
+  <selectbox id="selectbox1"/>
+  <selectbox id="selectbox2"/>
+ </window>
+</zk>

@@ -1,0 +1,59 @@
+<?page title="Person" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <window id="windowperson" xmlns:w="client" apply="org.test.zk.dialog.CDialogController" title="Persona" border="normal" hflex="min">
+        <vlayout width="355px">
+            <grid hflex="min">
+                <rows>
+                    <row>
+                        <label id="labelci" value="CI" width="150px" />
+                        <textbox id="textboxci" value="" width="250px" tabindex="1">
+                            <attribute w:name="doKeyPress_">
+                                
+                                <![CDATA[ function(evt) { if (!this._shallIgnore(evt, "0123456789")) this.$doKeyPress_(evt); } ]]>
+                                
+                            
+                            
+                        </attribute>
+                        </textbox>
+                    </row>
+                    <row>
+                        <label id="labelnombre" value="Nombre" width="150px" />
+                        <textbox id="textboxnombre" value="" width="250px" tabindex="2" />
+                    </row>
+                    <row>
+                        <label id="labelapellido" value="Apellido" width="150px" />
+                        <textbox id="textboxapellido" value="" width="250px" tabindex="3" />
+                    </row>
+                    <row>
+                        <label id="labeltelefono" value="Teléfono" width="150px" />
+                        <textbox id="textboxtelefono" value="" width="250px" tabindex="4">
+                        <attribute w:name="doKeyPress_">
+                                
+                                <![CDATA[ function(evt) { if (!this._shallIgnore(evt, "0123456789")) this.$doKeyPress_(evt); } ]]>
+                                
+                            
+                            
+                        </attribute>
+                        </textbox>
+                    </row>
+                    <row>
+                        <label id="labelfecha" value="Fecha" width="150px" />
+                        <datebox id="dateboxfecha" width="250px" tabindex="5" />
+                    </row>
+                    <row>
+                        <label id="labelgenero" value="Género" width="150px" />
+                        <selectbox id="selectboxgenero" />
+                    </row>
+                    <row>
+                        <label id="labelcomentario" value="Comentario" width="150px" />
+                        <textbox id="textboxcomentario" value="[Ingrese una reseña sobre esta persona]" width="250px" tabindex="6" rows="10" />
+                    </row>
+                </rows>
+            </grid>
+            <div id="buttoncontainer">
+                <button id="buttonguardar" label="Guardar Datos" style="float:right;margin-left:15px"></button>
+                <button id="buttoncancelar" label="Cancelar" style="float:right;margin-left:15px"></button>
+            </div>
+        </vlayout>
+    </window>
+</zk>
