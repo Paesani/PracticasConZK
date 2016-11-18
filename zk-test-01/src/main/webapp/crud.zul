@@ -1,0 +1,42 @@
+<?page title="crud" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <window id="windowcrud" apply="org.test.zk.crud.CCrudController01" title="crud" border="normal" height="100%" width="100%">
+        <grid height="100%" width="100%">
+            <columns>
+                <column label="Asignar una tarea" hflex="min" vflex="min" />
+                <column label="Asignar la prioridad" height="100%" width="100%" />
+            </columns>
+            <rows hflex="100%" vflex="100%" >
+                <row>                    
+                    <vbox height="100%" width="500px">
+                        <textbox id="textboxnuevo" value="" width="500px" />
+                        <div id="divisor">
+                            <button id="buttonnew" label="Crear" style="float:right;margin-left:15px"></button>
+                            <button id="buttonewcancel" label="Cancelar" style="float:right;margin-left:15px"></button>
+                            <button id="buttondelete" label="Borrar" style="float:right;margin-left:15px"></button>
+                            <button id="buttonmodify" label="Modificar" style="float:right;margin-left:15px"></button>
+                            <label id="index" value="indice"></label>
+                        </div>
+                    </vbox>
+                    <vbox height="20px" width="40px" pack="center" align="center">
+                        <radiogroup onCheck="prioridad.value = self.selectedItem.label">
+                            <radio id="baja" label="1" />
+                            <radio id="media" label="2" />
+                            <radio id="alta" label="3" />
+                        </radiogroup>
+                        <label id="prioridad" value="Prioridad"></label>
+                    </vbox>
+                </row>
+                <row>
+                    <vbox width="500px" height="100%" pack="center" align="center" >
+                        <listbox id="box" height="100%" width="100%">
+                        <listhead>
+                        <listheader label="Tareas pendientes" sort="auto"></listheader>
+                        </listhead>
+                        </listbox>
+                    </vbox>
+                </row>
+            </rows>
+        </grid>
+    </window>
+</zk>

@@ -1,0 +1,16 @@
+<?page title="Lista De Tareas" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <window title="Lista de tareas" apply="org.test.zk.crudlist.CCrudListController01" border="normal">
+        <listbox id="box" >
+            <listhead>
+                <listheader label="Prioridad" sort="auto" vflex="min" hflex="min" />
+                <listheader label="Tarea" sort="auto" vflex="100%" hflex="100%" />
+            </listhead>
+        </listbox>
+        <div id="divisor">
+            <button id="buttoncreate" label="Crear" style="float:right;margin-left:15px"></button>
+            <button id="buttonndelete" label="Borrar" style="float:right;margin-left:15px"></button>
+            <button id="buttonmodify" label="Modificar" style="float:right;margin-left:15px"></button>
+        </div>
+    </window>
+</zk>
