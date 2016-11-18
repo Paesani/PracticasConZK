@@ -42,7 +42,7 @@ public class CCrudController01 extends SelectorComposer<Component> implements It
     // para algo relativamente pequeño
     // Aparte mi inexperiencia con la herramienta no me deja hacer todo lo que
     // quiero
-    // La documentación en internet es insuficiente
+    // La documentación en internet es insuficiente :(
     @Wire
     Window windowcrud;
     @Wire
