@@ -1,5 +1,7 @@
 package org.test.zk;
 
+import java.time.LocalDate;
+
 import org.test.zk.dao.CPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -96,7 +98,7 @@ public class CTest01Controller extends SelectorComposer<Component> implements It
     }
     @Listen("onClick=#buttontest06")
     public void onClickButtonTest06(Event event){
-        datamodelpersona.add(new CPerson(ci,Nombre,Apellido,Telefono));
+        datamodelpersona.add(new CPerson("1", "Roger", "Paesani", "04129193576",1,LocalDate.parse("28-06-1995"),"Yo"));
         ci = ci+1;
         Nombre = Nombre.concat("a");
         Apellido = Apellido.concat("b");

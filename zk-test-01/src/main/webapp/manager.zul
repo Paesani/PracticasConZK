@@ -1,16 +1,23 @@
 <?page title="Manager" contentType="text/html;charset=UTF-8"?>
 <zk>
-    <window xmlns:w="client" position="center, center" apply="org.test.zk.manager.CManagerController" title="Persona" border="normal" hflex="min">
-    <vlayout width="355px">
-    <listbox id="listboxpersons" width="100%" height="360px">
-    
-    </listbox>
+    <window xmlns:w="client" position="center, center" apply="org.test.zk.manager.CManagerController" title="Persona" border="normal" hflex="min" width="360px">
+        <vlayout width="710px">
+            <listbox id="listboxpersons" width="100%" height="360px">
+            <listhead width="100%" height="100%">
+            <listheader label="CI" width="100px"></listheader>
+            <listheader label="Nombre" width="100px"></listheader>
+            <listheader label="Apellido" width="100px"></listheader>
+            <listheader label="Teléfono" width="100px"></listheader>
+            <listheader label="Género" width="100px"></listheader>
+            <listheader label="Cumpleaños" width="100px"></listheader>
+            <listheader label="Comentario" width="100px"> </listheader>
+            </listhead>
+            </listbox>
             <div id="buttoncontainer">
-                <button id="buttonadd" label="Añadir" style="float:right;margin-left:15px"></button>
-                <button id="buttonmodify" label="Modificar" style="float:right;margin-left:15px"></button>
                 <button id="buttondelete" label="Borrar" style="float:right;margin-left:15px"></button>
+                <button id="buttonmodify" label="Modificar" style="float:right;margin-left:15px"></button>
+                <button id="buttonadd" label="Añadir" style="float:right;margin-left:15px"></button>
             </div>
-    
-    </vlayout>
+        </vlayout>
     </window>
 </zk>

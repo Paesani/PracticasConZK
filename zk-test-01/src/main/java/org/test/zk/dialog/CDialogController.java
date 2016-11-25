@@ -1,6 +1,9 @@
 package org.test.zk.dialog;
 
+import org.test.zk.dao.CPerson;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -55,24 +58,45 @@ public class CDialogController extends SelectorComposer<Component> {
     @Wire
     Button buttoncancelar;
     protected ListModelList<String> datamodel = new ListModelList<String>();
+
     public void doAfterCompose(Component comp) {
         try {
-            super.doAfterCompose( comp );
+            super.doAfterCompose(comp);
             dateboxfecha.setFormat("dd-MM-yyyy");
             datamodel.add("Femenino");
             datamodel.add("Masculino");
             selectboxgenero.setModel(datamodel);
-            selectboxgenero.setSelectedIndex(0); 
+            selectboxgenero.setSelectedIndex(0);
             datamodel.addSelection("Femenino");
-        } catch (Exception e) {     
+            final Execution execution = Executions.getCurrent();
+            CPerson personToModify = (CPerson) execution.getArg().get("personToModify");
+            textboxci.setValue(personToModify.getStrci());
+            textboxnombre.setValue(personToModify.getnombre());
+            textboxapellido.setValue(personToModify.getapellido());
+            textboxtelefono.setValue(personToModify.gettelefono());
+            if (personToModify.getGender() == 0) {
+                datamodel.addToSelection("Femenino");
+            } else {
+                datamodel.addToSelection("Masculino");
+            }
+            dateboxfecha.setValue(java.sql.Date.valueOf(personToModify.getCumple()));
+            textboxcomentario.setValue(personToModify.getComment());
+        } catch (Exception e) {
             e.printStackTrace();
         }
-    }    
+    }
+
     @Listen("onClick=#buttonguardar")
-    public void onClickButtonGuardar(Event event) {        
-        Messagebox.show("CI:"+ textboxci.getValue()+ " Nombre:"+ textboxnombre.getValue()+ " Apellido:" + textboxapellido.getValue()+ " Teléfono:"+ textboxtelefono.getValue()+ " Fecha:" + dateboxfecha.getValue()+ " Comentario:"+ textboxcomentario.getValue(), "Aceptar", Messagebox.OK, Messagebox.INFORMATION);;
+    public void onClickButtonGuardar(Event event) {
+        Messagebox.show(
+                "CI:" + textboxci.getValue() + " Nombre:" + textboxnombre.getValue() + " Apellido:"
+                        + textboxapellido.getValue() + " Teléfono:" + textboxtelefono.getValue() + " Fecha:"
+                        + dateboxfecha.getValue() + " Comentario:" + textboxcomentario.getValue(),
+                "Aceptar", Messagebox.OK, Messagebox.INFORMATION);
+        ;
         windowperson.detach();
     }
+
     @Listen("onClick=#buttoncancelar")
     public void onClickButtonCancelar(Event event) {
         Messagebox.show("       Acción Cancelada", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);

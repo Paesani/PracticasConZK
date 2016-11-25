@@ -1,6 +1,7 @@
 package org.test.zk.dao;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class CPerson implements Serializable {
     /**
@@ -10,7 +11,44 @@ public class CPerson implements Serializable {
     protected String strci;
     protected String strnombre;
     protected String strapellido;
-    protected int inttelefono;
+    protected String inttelefono;
+    protected int intgender;// 0 Mujer, 1 Hombre
+    protected LocalDate cumple=null;
+    protected String strcomment;
+
+    public CPerson(String strci, String strnombre, String strapellido, String inttelefono, int intgender, LocalDate cumple, String strcomment) {        
+        this.strci = strci;
+        this.strnombre = strnombre;
+        this.strapellido = strapellido;
+        this.inttelefono = inttelefono;
+        this.intgender = intgender;
+        this.cumple = cumple;
+        this.strcomment = strcomment;
+    }
+
+    public int getGender() {
+        return intgender;
+    }
+
+    public void setGender(int intgender) {
+        this.intgender = intgender;
+    }
+
+    public LocalDate getCumple() {
+        return cumple;
+    }
+
+    public void setCumple(LocalDate cumple) {
+        this.cumple = cumple;
+    }
+
+    public String getComment() {
+        return strcomment;
+    }
+
+    public void setComment(String strcomment) {
+        this.strcomment = strcomment;
+    }
 
     public String getStrci() {
         return strci;
@@ -22,13 +60,6 @@ public class CPerson implements Serializable {
 
     public String getnombre() {
         return strnombre;
-    }
-
-    public CPerson(String strci, String strnombre, String strapellido, int strtelefono) {        
-        this.strci = strci;
-        this.strnombre = strnombre;
-        this.strapellido = strapellido;
-        this.inttelefono = strtelefono;
     }
 
     public void setnombre(String strnombre) {
@@ -43,11 +74,11 @@ public class CPerson implements Serializable {
         this.strapellido = strapellido;
     }
 
-    public int gettelefono() {
+    public String gettelefono() {
         return inttelefono;
     }
 
-    public void settelefono(int strtelefono) {
+    public void settelefono(String strtelefono) {
         this.inttelefono = strtelefono;
     }
 }
