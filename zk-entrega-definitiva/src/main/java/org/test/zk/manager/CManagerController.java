@@ -8,6 +8,7 @@ import java.util.Set;
 import org.test.zk.dao.CPerson;
 import org.test.zk.manager.CManagerController.MyRenderer;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -37,7 +38,9 @@ public class CManagerController extends SelectorComposer<Component> {
     Button buttondelete;
     @Wire
     Listbox listboxpersons;
-
+    @Wire
+    Window windowmanager;
+    protected Execution execution = Executions.getCurrent();
     public class MyRenderer implements ListitemRenderer<CPerson> {
 
         @Override
@@ -99,7 +102,13 @@ public class CManagerController extends SelectorComposer<Component> {
             datamodelpersona.add(persona2);
             datamodelpersona.add(persona3);
             listboxpersons.setModel(datamodelpersona);
-            listboxpersons.setItemRenderer(new MyRenderer());
+            listboxpersons.setItemRenderer(new MyRenderer());            
+            CPerson Nuevo = (CPerson) execution.getArg().get("Data");
+            if (Nuevo!=null){
+                datamodelpersona.add(Nuevo);
+                listboxpersons.setModel(datamodelpersona);
+                listboxpersons.setItemRenderer((new MyRenderer()));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,8 +129,12 @@ public class CManagerController extends SelectorComposer<Component> {
             CPerson person = selecteditems.iterator().next();
             Map<String,Object> arg = new HashMap<String,Object>();
             arg.put("personToModify", person);
+            arg.put("buttonadd", buttonadd);
+            arg.put("buttonmodify", buttonmodify);
+            arg.put("ModifyModel", datamodelpersona);
             Window win = (Window) Executions.createComponents("/dialog.zul", null , arg);
-            win.doModal();
+            win.doModal();            
+            windowmanager.detach();
         }else{ //sino
             Messagebox.show("       Error, no hay selección.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
             //Se da un mensaje de error

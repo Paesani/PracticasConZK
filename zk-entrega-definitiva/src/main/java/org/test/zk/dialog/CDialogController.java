@@ -1,10 +1,15 @@
 package org.test.zk.dialog;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.test.zk.dao.CPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -58,6 +63,10 @@ public class CDialogController extends SelectorComposer<Component> {
     @Wire
     Button buttoncancelar;
     protected ListModelList<String> datamodel = new ListModelList<String>();
+    protected Button buttonadd;
+    protected Button buttonmodify;
+    protected Execution execution = Executions.getCurrent();
+    CPerson personaToModify = (CPerson) execution.getArg().get("personToModify");
 
     public void doAfterCompose(Component comp) {
         try {
@@ -68,8 +77,9 @@ public class CDialogController extends SelectorComposer<Component> {
             selectboxgenero.setModel(datamodel);
             selectboxgenero.setSelectedIndex(0);
             datamodel.addSelection("Femenino");
-            final Execution execution = Executions.getCurrent();
             CPerson personToModify = (CPerson) execution.getArg().get("personToModify");
+            buttonmodify = (Button) execution.getArg().get("buttonmodify");// TypeCast
+            buttonadd = (Button) execution.getArg().get("buttonadd");// TypeCast
             textboxci.setValue(personToModify.getStrci());
             textboxnombre.setValue(personToModify.getnombre());
             textboxapellido.setValue(personToModify.getapellido());
@@ -88,12 +98,31 @@ public class CDialogController extends SelectorComposer<Component> {
 
     @Listen("onClick=#buttonguardar")
     public void onClickButtonGuardar(Event event) {
-        Messagebox.show(
-                "CI:" + textboxci.getValue() + " Nombre:" + textboxnombre.getValue() + " Apellido:"
-                        + textboxapellido.getValue() + " Teléfono:" + textboxtelefono.getValue() + " Fecha:"
-                        + dateboxfecha.getValue() + " Comentario:" + textboxcomentario.getValue(),
-                "Aceptar", Messagebox.OK, Messagebox.INFORMATION);
-        ;
+        /*
+         * Messagebox.show( "CI:" + textboxci.getValue() + " Nombre:" +
+         * textboxnombre.getValue() + " Apellido:" + textboxapellido.getValue()
+         * + " Teléfono:" + textboxtelefono.getValue() + " Fecha:" +
+         * dateboxfecha.getValue() + " Comentario:" +
+         * textboxcomentario.getValue(), "Aceptar", Messagebox.OK,
+         * Messagebox.INFORMATION); //;
+         */
+        personaToModify.setci(textboxci.getValue());
+        personaToModify.setnombre(textboxnombre.getValue());
+        personaToModify.setapellido(textboxapellido.getValue());
+        personaToModify.settelefono(textboxtelefono.getValue());
+        personaToModify.setGender(selectboxgenero.getSelectedIndex());
+        personaToModify.setCumple(LocalDate.parse(dateboxfecha.getValue().toString()));
+        personaToModify.setComment(textboxcomentario.getValue());
+        Events.echoEvent(new Event("onKek", buttonmodify, personaToModify));
+    }
+
+    @Listen("onKek=#buttonmodify")
+    public void onDialogFinishbuttonmodify(Event event) {
+        CPerson personToModif = (CPerson) event.getData();
+        Map<String, Object> arg = new HashMap<String, Object>();
+        arg.put("Data", personToModif);
+        Window win = (Window) Executions.createComponents("/manager.zul", null, arg);
+        win.doModal();
         windowperson.detach();
     }
 

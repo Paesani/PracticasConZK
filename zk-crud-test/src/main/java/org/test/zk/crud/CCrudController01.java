@@ -94,14 +94,14 @@ public class CCrudController01 extends SelectorComposer<Component> implements It
             Messagebox.show("Error, lista vacía.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);// Mensaje
             // de
             // error
-        } else {// sino
+        } else {// sino            
             box.removeItemAt(x);// Removemos la posición seleccionada
             datamodeltarea.remove(x);// Me tomó como dos horas darme cuenta de
             // que
             box.setModel(datamodeltarea);// me faltaban estas línea de código.
         }
         // El datamodel sobreescribe la caja, no cambia con ella (ver línea 79)
-        // {¿Por qué rayos esto funciona así?}
+        // {¿Por qué rayos esto funciona así?
     }
 
     @Listen("onClick=#buttonewcancel") // Este botón lo tenía ya porque intenté
