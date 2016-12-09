@@ -89,7 +89,9 @@ public class CDialogController extends SelectorComposer<Component> {
             } else {
                 datamodel.addToSelection("Masculino");
             }
+            if(personToModify.getCumple()!=null){
             dateboxfecha.setValue(java.sql.Date.valueOf(personToModify.getCumple()));
+            }           
             textboxcomentario.setValue(personToModify.getComment());
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,16 +107,25 @@ public class CDialogController extends SelectorComposer<Component> {
          * dateboxfecha.getValue() + " Comentario:" +
          * textboxcomentario.getValue(), "Aceptar", Messagebox.OK,
          * Messagebox.INFORMATION); //;
-         */        
+         */
+        if(dateboxfecha.getValue()!=null){
+        LocalDate id = new java.sql.Date(dateboxfecha.getValue().getTime()).toLocalDate();
         personaToModify.setci(textboxci.getValue());
         personaToModify.setnombre(textboxnombre.getValue());
         personaToModify.setapellido(textboxapellido.getValue());
         personaToModify.settelefono(textboxtelefono.getValue());
         personaToModify.setGender(selectboxgenero.getSelectedIndex());
-        personaToModify.setCumple(LocalDate.parse((CharSequence) dateboxfecha.getValue()));
+        personaToModify.setCumple(id);
         personaToModify.setComment(textboxcomentario.getValue());
+        if ((!personaToModify.getStrci().equals("")) && (!personaToModify.getnombre().equals("")) && (!personaToModify.getapellido().equals("")) && !personaToModify.gettelefono().equals("") && personaToModify.getGender()>=0 && personaToModify.getCumple()!=null && !personaToModify.getComment().equals("")){
         Events.echoEvent(new Event("onKek", buttonmodify, personaToModify));
-        windowperson.detach();
+        windowperson.detach();                
+        }else{
+            Messagebox.show("       Error, uno de los campos está vacío", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+        }
+        }else{
+            Messagebox.show("       Error, fecha vacía", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+        }
     }    
 
     @Listen("onClick=#buttoncancelar")

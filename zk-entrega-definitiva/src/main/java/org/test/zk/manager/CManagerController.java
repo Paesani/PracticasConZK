@@ -94,7 +94,7 @@ public class CManagerController extends SelectorComposer<Component> {
     public void doAfterCompose(Component comp) {
         try {
             super.doAfterCompose(comp);            
-            CPerson persona1 = new CPerson("1", "Roger", "Paesani", "04129193576",1,LocalDate.parse("1995-08-16"),"Yo");
+            CPerson persona1 = new CPerson("1", "Roger", "Paesani", "04129193576",1,LocalDate.parse("1995-08-28"),"Yo");
             CPerson persona2 = new CPerson("2", "Chito", "Narváez", "6942069",1,LocalDate.parse("2013-02-21"),"Perro");
             CPerson persona3 = new CPerson("3", "Asunción", "Narváez", "04160980720",0,LocalDate.parse("1967-05-28"),"Mamá");
             datamodelpersona.setMultiple(true);
