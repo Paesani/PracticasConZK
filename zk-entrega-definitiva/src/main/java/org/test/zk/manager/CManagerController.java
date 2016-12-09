@@ -15,6 +15,7 @@ import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -37,12 +38,11 @@ public class CManagerController extends SelectorComposer<Component> {
     @Wire
     Button buttondelete;
     @Wire
-    Listbox listboxpersons;
+    Listbox listboxpersons;    
     @Wire
     Window windowmanager;
     protected Execution execution = Executions.getCurrent();
-    public class MyRenderer implements ListitemRenderer<CPerson> {
-
+    public class MyRenderer implements ListitemRenderer<CPerson> {    
         @Override
         public void render(Listitem listitem, CPerson persona, int arg2) throws Exception {
             try {
@@ -102,13 +102,7 @@ public class CManagerController extends SelectorComposer<Component> {
             datamodelpersona.add(persona2);
             datamodelpersona.add(persona3);
             listboxpersons.setModel(datamodelpersona);
-            listboxpersons.setItemRenderer(new MyRenderer());            
-            CPerson Nuevo = (CPerson) execution.getArg().get("Data");
-            if (Nuevo!=null){
-                datamodelpersona.add(Nuevo);
-                listboxpersons.setModel(datamodelpersona);
-                listboxpersons.setItemRenderer((new MyRenderer()));
-            }
+            listboxpersons.setItemRenderer(new MyRenderer());                      
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -116,12 +110,16 @@ public class CManagerController extends SelectorComposer<Component> {
 
     @Listen("onClick=#buttonadd")
     public void onClickbuttonadd(Event event) {
-        // Map arg = new HashMap();
-        // arg.put("someName", someValue);
-        Window win = (Window) Executions.createComponents("/dialog.zul", null, null);
+        CPerson vacio = new CPerson(null, null, null, null, 0, null, null);
+        listboxpersons.setSelectedIndex(-1);        
+        Map<String,Object> arg = new HashMap<String,Object>();
+        arg.put("personToModify", vacio);
+        arg.put("buttonadd", buttonadd);
+        arg.put("buttonmodify", buttonmodify);
+        arg.put("ModifyModel", datamodelpersona);
+        Window win = (Window) Executions.createComponents("/dialog.zul", null,arg);
         win.doModal();
-    }
-
+    }    
     @Listen("onClick=#buttonmodify")
     public void onClickbuttonmodify(Event event) {
         Set<CPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
@@ -133,12 +131,28 @@ public class CManagerController extends SelectorComposer<Component> {
             arg.put("buttonmodify", buttonmodify);
             arg.put("ModifyModel", datamodelpersona);
             Window win = (Window) Executions.createComponents("/dialog.zul", null , arg);
-            win.doModal();            
-            windowmanager.detach();
+            win.doModal();                        
         }else{ //sino
             Messagebox.show("       Error, no hay selección.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
             //Se da un mensaje de error
         }
+    }
+    @Listen("onKek=#buttonmodify")
+    public void onDialogFinishbuttonmodify(Event event) {
+        CPerson personToModif = (CPerson) event.getData();
+        int index = listboxpersons.getSelectedIndex();
+        if (index>=0){
+            datamodelpersona.remove(index);
+            datamodelpersona.add(index, personToModif);
+            listboxpersons.setModel(datamodelpersona);
+            listboxpersons.setItemRenderer((new MyRenderer()));
+            Messagebox.show("       ¡Persona modificada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+        }else{                       
+            datamodelpersona.add(personToModif);
+            listboxpersons.setModel(datamodelpersona);
+            listboxpersons.setItemRenderer((new MyRenderer()));
+            Messagebox.show("       ¡Lista agregada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+        }        
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -175,16 +189,3 @@ public class CManagerController extends SelectorComposer<Component> {
         }
     }
 }
-
-/*
- * Hay un pequeño detalle con el buffer del 36:40, cuando se utiliza para más de
- * dos selecciones no te las entrega ordenadamente. Si se tiene: 1 2 3 4 5 y se
- * selecciona con shift + leftclick toda la lista, el resultado es: ;1;5;2;3;4
- * 
- * Además si se selecciona con ctrl + leftclick nos retorna el orden en el que
- * seleccionemos los elementos, digamos que yo selecciono el primer elemento,
- * luego el último y continuo de mayor a menor, el resultado sería: ;1;5;4;3;2.
- * 
- * ¿Hay alguna manera de hacer que el buffer lo reciba en orden?
- */
-

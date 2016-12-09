@@ -10,14 +10,14 @@
             <listheader label="Teléfono" width="100px"></listheader>
             <listheader label="Género" width="100px"></listheader>
             <listheader label="Cumpleaños" width="100px"></listheader>
-            <listheader label="Comentario" width="100px"> </listheader>
+            <listheader label="Comentario" width="100px"> </listheader>           
             </listhead>
             </listbox>
             <div id="buttoncontainer">
                 <button id="buttondelete" label="Borrar" style="float:right;margin-left:15px"></button>
                 <button id="buttonmodify" label="Modificar" style="float:right;margin-left:15px"></button>
                 <button id="buttonadd" label="Añadir" style="float:right;margin-left:15px"></button>
-            </div>
+            </div>            
         </vlayout>
     </window>
 </zk>

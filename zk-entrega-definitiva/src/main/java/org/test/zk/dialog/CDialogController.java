@@ -105,26 +105,17 @@ public class CDialogController extends SelectorComposer<Component> {
          * dateboxfecha.getValue() + " Comentario:" +
          * textboxcomentario.getValue(), "Aceptar", Messagebox.OK,
          * Messagebox.INFORMATION); //;
-         */
+         */        
         personaToModify.setci(textboxci.getValue());
         personaToModify.setnombre(textboxnombre.getValue());
         personaToModify.setapellido(textboxapellido.getValue());
         personaToModify.settelefono(textboxtelefono.getValue());
         personaToModify.setGender(selectboxgenero.getSelectedIndex());
-        personaToModify.setCumple(LocalDate.parse(dateboxfecha.getValue().toString()));
+        personaToModify.setCumple(LocalDate.parse((CharSequence) dateboxfecha.getValue()));
         personaToModify.setComment(textboxcomentario.getValue());
         Events.echoEvent(new Event("onKek", buttonmodify, personaToModify));
-    }
-
-    @Listen("onKek=#buttonmodify")
-    public void onDialogFinishbuttonmodify(Event event) {
-        CPerson personToModif = (CPerson) event.getData();
-        Map<String, Object> arg = new HashMap<String, Object>();
-        arg.put("Data", personToModif);
-        Window win = (Window) Executions.createComponents("/manager.zul", null, arg);
-        win.doModal();
         windowperson.detach();
-    }
+    }    
 
     @Listen("onClick=#buttoncancelar")
     public void onClickButtonCancelar(Event event) {
