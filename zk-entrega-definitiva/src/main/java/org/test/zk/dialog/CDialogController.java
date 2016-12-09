@@ -106,7 +106,7 @@ public class CDialogController extends SelectorComposer<Component> {
          * + " Teléfono:" + textboxtelefono.getValue() + " Fecha:" +
          * dateboxfecha.getValue() + " Comentario:" +
          * textboxcomentario.getValue(), "Aceptar", Messagebox.OK,
-         * Messagebox.INFORMATION); //;
+         * Messagebox.INFORMATION); //;/
          */
         if(dateboxfecha.getValue()!=null){
         LocalDate id = new java.sql.Date(dateboxfecha.getValue().getTime()).toLocalDate();
