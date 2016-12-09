@@ -4,7 +4,7 @@
         <vlayout width="710px">
             <listbox id="listboxpersons" width="100%" height="360px">
             <listhead width="100%" height="100%">
-            <listheader label="CI" width="100px"></listheader>
+            <listheader label="Ci" width="100px"></listheader>
             <listheader label="Nombre" width="100px"></listheader>
             <listheader label="Apellido" width="100px"></listheader>
             <listheader label="Teléfono" width="100px"></listheader>

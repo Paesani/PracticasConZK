@@ -13,7 +13,7 @@ public class CPerson implements Serializable {
     protected String strnombre;
     protected String strapellido;
     protected String inttelefono;
-    protected int intgender;// 0 Mujer, 1 Hombre
+    protected int intgender;// 0 Mujer, 1 Hombre/
     protected LocalDate cumple=null;
     protected String strcomment;
 

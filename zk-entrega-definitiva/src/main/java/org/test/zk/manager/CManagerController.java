@@ -86,7 +86,7 @@ public class CManagerController extends SelectorComposer<Component> {
          * public void render(Listitem listitem, CPerson data, int index) {
          * Listcell cell = new Listcell(); listitem.appendChild(cell); if (data
          * instanceof String[]) { cell.appendChild(new Label(((String[])
-         * data)[0].toString())); } else if (data instanceof String) {
+         * data)[0].toString())); } else if (data instanceof String) {/
          * cell.appendChild(new Label(data.toString())); } else {
          * cell.appendChild(new Label("UNKNOW:" + data.toString())); } } }
          */}

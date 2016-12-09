@@ -70,7 +70,7 @@
                     </row>
                     <row>
                         <label id="labelcomentario" value="Comentario" width="150px" />
-                        <textbox id="textboxcomentario" value="[Ingrese una reseña sobre esta persona]" width="250px" tabindex="6" rows="10" />
+                        <textbox id="textboxcomentario" value="[Ingrese un comentario sobre esta persona]" width="250px" tabindex="6" rows="10" />
                     </row>
                 </rows>
             </grid>
