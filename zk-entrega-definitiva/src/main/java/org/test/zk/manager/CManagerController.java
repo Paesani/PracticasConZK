@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.test.zk.dao.CPerson;
+import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.manager.CManagerController.MyRenderer;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -32,6 +33,8 @@ public class CManagerController extends SelectorComposer<Component> {
     private static final long serialVersionUID = -1591648938821366036L;
     protected ListModelList<CPerson> datamodelpersona = new ListModelList<CPerson>();
     @Wire
+    Button buttonconnection;
+    @Wire
     Button buttonadd;
     @Wire
     Button buttonmodify;
@@ -42,6 +45,7 @@ public class CManagerController extends SelectorComposer<Component> {
     @Wire
     Window windowmanager;
     protected Execution execution = Executions.getCurrent();
+    protected CDatabaseConnection database = null;
     public class MyRenderer implements ListitemRenderer<CPerson> {    
         @Override
         public void render(Listitem listitem, CPerson persona, int arg2) throws Exception {
@@ -108,6 +112,30 @@ public class CManagerController extends SelectorComposer<Component> {
         }
     }
 
+    @Listen("onClick=#buttonconnection")    
+    public void onClickbuttonconnection(Event event){
+        if(buttonconnection.getLabel().equalsIgnoreCase("Conectar")){//Si se va a conectar
+            database = new CDatabaseConnection();//Se instancia
+            if(database.makeConectionToDatabase()){//Si se logra conectar
+                buttonconnection.setLabel("Desconectar");//Se cambia el contexto                
+                Messagebox.show("       ¡Conexión exitosa!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de exito
+            }else{//sino
+                Messagebox.show("       ¡Conexión fallida!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de fracaso
+            }
+        }else{//Si se va a desconectar
+         if (database!=null){
+             buttonconnection.setLabel("Conectar");//Se cambia el contexto
+             if(database.CloseConnectionToDatabase()){
+                 Messagebox.show("       ¡Conexión cerrada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+             }else{
+                 Messagebox.show("       ¡Fallo al cerrar conexión!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+             }
+         }else{
+             Messagebox.show("       ¡No estás conectado!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+         }
+        }
+    }
+    
     @Listen("onClick=#buttonadd")
     public void onClickbuttonadd(Event event) {
         CPerson vacio = new CPerson(null, null, null, null, 0, null, null);
@@ -188,4 +216,4 @@ public class CManagerController extends SelectorComposer<Component> {
             //Se da un mensaje de error
         }
     }
-}
+}   

@@ -1,6 +1,6 @@
 <?page title="crud" contentType="text/html;charset=UTF-8"?>
 <zk>
-    <window id="windowcrud" apply="org.test.zk.crud.CCrudController01" title="crud" border="normal" height="100%" width="100%">
+    <window id="windowcrud" apply="org.test.zk.crud.CCrudController01" title="crud" border="normal" height="100%" width="100%">    
         <grid height="100%" width="100%">
             <columns>
                 <column label="Asignar una tarea" hflex="min" vflex="min" />
