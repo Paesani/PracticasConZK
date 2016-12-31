@@ -41,6 +41,7 @@ public class CDatabaseConnection implements Serializable {
         try{
             if(dbConnection!=null){
                 dbConnection.close();
+                dbConnection=null;
                 resultado=true;
             }
         }catch(Exception e){

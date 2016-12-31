@@ -7,16 +7,16 @@ import java.util.Set;
 
 import org.test.zk.dao.CPerson;
 import org.test.zk.database.CDatabaseConnection;
-import org.test.zk.manager.CManagerController.MyRenderer;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -44,6 +44,7 @@ public class CManagerController extends SelectorComposer<Component> {
     Listbox listboxpersons;    
     @Wire
     Window windowmanager;
+    public static final String dbkey = "database";
     protected Execution execution = Executions.getCurrent();
     protected CDatabaseConnection database = null;
     public class MyRenderer implements ListitemRenderer<CPerson> {    
@@ -106,7 +107,12 @@ public class CManagerController extends SelectorComposer<Component> {
             datamodelpersona.add(persona2);
             datamodelpersona.add(persona3);
             listboxpersons.setModel(datamodelpersona);
-            listboxpersons.setItemRenderer(new MyRenderer());                      
+            listboxpersons.setItemRenderer(new MyRenderer());
+            Session sesion = Sessions.getCurrent();//Se crea variable sesion
+            if(sesion.getAttribute(dbkey)instanceof CDatabaseConnection){
+                database=(CDatabaseConnection) sesion.getAttribute(dbkey);
+                buttonconnection.setLabel("Desconectar");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,18 +120,22 @@ public class CManagerController extends SelectorComposer<Component> {
 
     @Listen("onClick=#buttonconnection")    
     public void onClickbuttonconnection(Event event){
-        if(buttonconnection.getLabel().equalsIgnoreCase("Conectar")){//Si se va a conectar
-            database = new CDatabaseConnection();//Se instancia
-            if(database.makeConectionToDatabase()){//Si se logra conectar
+        Session sesion = Sessions.getCurrent();
+        if(database==null){//Si se va a conectar            
+                database = new CDatabaseConnection();//Se instancia            
+            if(database.makeConectionToDatabase()){//Si se logra conectar                
+                sesion.setAttribute(dbkey, database);//Se crea la sesión
                 buttonconnection.setLabel("Desconectar");//Se cambia el contexto                
                 Messagebox.show("       ¡Conexión exitosa!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de exito
             }else{//sino
                 Messagebox.show("       ¡Conexión fallida!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de fracaso
             }
         }else{//Si se va a desconectar
-         if (database!=null){
+         if (database!=null){//Si la variable no es nula
+             sesion.setAttribute(dbkey, null);//Se limpia la sesión
              buttonconnection.setLabel("Conectar");//Se cambia el contexto
-             if(database.CloseConnectionToDatabase()){
+             if(database.CloseConnectionToDatabase()){//Se cierra la conexión
+                 database=null;
                  Messagebox.show("       ¡Conexión cerrada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
              }else{
                  Messagebox.show("       ¡Fallo al cerrar conexión!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
