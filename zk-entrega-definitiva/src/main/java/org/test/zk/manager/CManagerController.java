@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.test.zk.dao.CPerson;
 import org.test.zk.database.CDatabaseConnection;
+import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -31,7 +31,7 @@ public class CManagerController extends SelectorComposer<Component> {
      * 
      */
     private static final long serialVersionUID = -1591648938821366036L;
-    protected ListModelList<CPerson> datamodelpersona = new ListModelList<CPerson>();
+    protected ListModelList<TBLPerson> datamodelpersona = new ListModelList<TBLPerson>();
     @Wire
     Button buttonconnection;
     @Wire
@@ -47,9 +47,9 @@ public class CManagerController extends SelectorComposer<Component> {
     public static final String dbkey = "database";
     protected Execution execution = Executions.getCurrent();
     protected CDatabaseConnection database = null;
-    public class MyRenderer implements ListitemRenderer<CPerson> {    
+    public class MyRenderer implements ListitemRenderer<TBLPerson> {    
         @Override
-        public void render(Listitem listitem, CPerson persona, int arg2) throws Exception {
+        public void render(Listitem listitem, TBLPerson persona, int arg2) throws Exception {
             try {
 
                 Listcell cell = new Listcell();// Se crea una nueva celda
@@ -99,9 +99,9 @@ public class CManagerController extends SelectorComposer<Component> {
     public void doAfterCompose(Component comp) {
         try {
             super.doAfterCompose(comp);            
-            CPerson persona1 = new CPerson("1", "Roger", "Paesani", "04129193576",1,LocalDate.parse("1995-08-28"),"Yo");
-            CPerson persona2 = new CPerson("2", "Chito", "Narváez", "6942069",1,LocalDate.parse("2013-02-21"),"Perro");
-            CPerson persona3 = new CPerson("3", "Asunción", "Narváez", "04160980720",0,LocalDate.parse("1967-05-28"),"Mamá");
+            TBLPerson persona1 = new TBLPerson("1", "Roger", "Paesani", "04129193576",1,LocalDate.parse("1995-08-28"),"Yo");
+            TBLPerson persona2 = new TBLPerson("2", "Chito", "Narváez", "6942069",1,LocalDate.parse("2013-02-21"),"Perro");
+            TBLPerson persona3 = new TBLPerson("3", "Asunción", "Narváez", "04160980720",0,LocalDate.parse("1967-05-28"),"Mamá");
             datamodelpersona.setMultiple(true);
             datamodelpersona.add(persona1);
             datamodelpersona.add(persona2);
@@ -148,7 +148,7 @@ public class CManagerController extends SelectorComposer<Component> {
     
     @Listen("onClick=#buttonadd")
     public void onClickbuttonadd(Event event) {
-        CPerson vacio = new CPerson(null, null, null, null, 0, null, null);
+        TBLPerson vacio = new TBLPerson(null, null, null, null, 0, null, null);
         listboxpersons.setSelectedIndex(-1);        
         Map<String,Object> arg = new HashMap<String,Object>();
         arg.put("personToModify", vacio);
@@ -160,9 +160,9 @@ public class CManagerController extends SelectorComposer<Component> {
     }    
     @Listen("onClick=#buttonmodify")
     public void onClickbuttonmodify(Event event) {
-        Set<CPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
+        Set<TBLPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
         if ((selecteditems != null) && (datamodelpersona.getSelection().size() > 0)) {//Si hay elementos
-            CPerson person = selecteditems.iterator().next();
+            TBLPerson person = selecteditems.iterator().next();
             Map<String,Object> arg = new HashMap<String,Object>();
             arg.put("personToModify", person);
             arg.put("buttonadd", buttonadd);
@@ -177,7 +177,7 @@ public class CManagerController extends SelectorComposer<Component> {
     }
     @Listen("onKek=#buttonmodify")
     public void onDialogFinishbuttonmodify(Event event) {
-        CPerson personToModif = (CPerson) event.getData();
+        TBLPerson personToModif = (TBLPerson) event.getData();
         int index = listboxpersons.getSelectedIndex();
         if (index>=0){
             datamodelpersona.remove(index);
@@ -196,10 +196,10 @@ public class CManagerController extends SelectorComposer<Component> {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Listen("onClick=#buttondelete")
     public void onClickbuttondelete(Event event) {//Si se hace click en el botón borrar
-        Set<CPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
+        Set<TBLPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
         if ((selecteditems != null) && (datamodelpersona.getSelection().size() > 0)) {//Si hay elementos
             String buffer = null;//Se crea un buffer
-            for (CPerson persona : selecteditems) {//Por cada persona seleccionada
+            for (TBLPerson persona : selecteditems) {//Por cada persona seleccionada
                 if (buffer == null) {//Si el buffer está vacío
                     buffer = persona.getStrci() + " " + persona.getnombre() + " " + persona.getapellido() + " "
                             + persona.gettelefono() + " ";//Se toma el primer elemento
@@ -214,7 +214,7 @@ public class CManagerController extends SelectorComposer<Component> {
                                 if (evt.getName().equals("onOK")) {//Si la respuesta es sí
                                     alert("¡Elementos borrados!");//Se da un aviso
                                     while (selecteditems.iterator().hasNext()) {//mientras haya elementos seleccionados
-                                        CPerson persona = selecteditems.iterator().next();//se toma el elemento
+                                        TBLPerson persona = selecteditems.iterator().next();//se toma el elemento
                                         //selecteditems.iterator().remove();
                                         datamodelpersona.remove(persona);//Se destruye
                                     }//fin mientras

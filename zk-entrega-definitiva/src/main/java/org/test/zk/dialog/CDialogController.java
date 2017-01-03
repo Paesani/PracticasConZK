@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.test.zk.dao.CPerson;
+import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -66,7 +66,7 @@ public class CDialogController extends SelectorComposer<Component> {
     protected Button buttonadd;
     protected Button buttonmodify;
     protected Execution execution = Executions.getCurrent();
-    CPerson personaToModify = (CPerson) execution.getArg().get("personToModify");
+    TBLPerson personaToModify = (TBLPerson) execution.getArg().get("personToModify");
 
     public void doAfterCompose(Component comp) {
         try {
@@ -77,7 +77,7 @@ public class CDialogController extends SelectorComposer<Component> {
             selectboxgenero.setModel(datamodel);
             selectboxgenero.setSelectedIndex(0);
             datamodel.addSelection("Femenino");
-            CPerson personToModify = (CPerson) execution.getArg().get("personToModify");
+            TBLPerson personToModify = (TBLPerson) execution.getArg().get("personToModify");
             buttonmodify = (Button) execution.getArg().get("buttonmodify");// TypeCast
             buttonadd = (Button) execution.getArg().get("buttonadd");// TypeCast
             textboxci.setValue(personToModify.getStrci());

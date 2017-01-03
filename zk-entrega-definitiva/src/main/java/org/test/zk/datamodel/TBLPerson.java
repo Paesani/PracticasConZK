@@ -1,9 +1,9 @@
-package org.test.zk.dao;
+package org.test.zk.datamodel;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class CPerson implements Serializable {
+public class TBLPerson extends CAuditableDataModel implements Serializable {
 
     /**
      * 
@@ -17,7 +17,7 @@ public class CPerson implements Serializable {
     protected LocalDate cumple=null;
     protected String strcomment;
 
-    public CPerson(String strci, String strnombre, String strapellido, String inttelefono, int intgender, LocalDate cumple, String strcomment) {        
+    public TBLPerson(String strci, String strnombre, String strapellido, String inttelefono, int intgender, LocalDate cumple, String strcomment) {        
         this.strci = strci;
         this.strnombre = strnombre;
         this.strapellido = strapellido;
@@ -25,6 +25,9 @@ public class CPerson implements Serializable {
         this.intgender = intgender;
         this.cumple = cumple;
         this.strcomment = strcomment;
+    }
+
+    public TBLPerson() { 
     }
 
     public int getGender() {

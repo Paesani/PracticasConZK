@@ -2,7 +2,7 @@ package org.test.zk;
 
 import java.time.LocalDate;
 
-import org.test.zk.dao.CPerson;
+import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -14,7 +14,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Selectbox;
 import org.zkoss.zul.Window;
 
-public class CTest01Controller extends SelectorComposer<Component> implements ItemRenderer<CPerson> {
+public class CTest01Controller extends SelectorComposer<Component> implements ItemRenderer<TBLPerson> {
 
     /**
      * 
@@ -41,7 +41,7 @@ public class CTest01Controller extends SelectorComposer<Component> implements It
     @Wire
     Selectbox selectbox2;
     protected ListModelList<String> datamodel = new ListModelList<String>();//Modelo de Cadena, para los números
-    protected ListModelList<CPerson> datamodelpersona = new ListModelList<CPerson>();//Modelo de persona    
+    protected ListModelList<TBLPerson> datamodelpersona = new ListModelList<TBLPerson>();//Modelo de persona    
     
     @Listen("onClick=#buttontest02")//Prueba de modificación básica de botón
     public void onClickButtonTest02(Event event) {
@@ -64,7 +64,7 @@ public class CTest01Controller extends SelectorComposer<Component> implements It
         Apellido = Apellido.concat("b");
         Telefono = Telefono - 1;
         datamodelpersona.add(//Se crea una nueva persona con los datos únicos y se asigna al modelo de personas
-                new CPerson(ci, Nombre, Apellido, Integer.toString(Telefono), 1, LocalDate.parse("1995-06-28"), "Yo"));
+                new TBLPerson(ci, Nombre, Apellido, Integer.toString(Telefono), 1, LocalDate.parse("1995-06-28"), "Yo"));
         selectbox2.setModel(datamodelpersona);//Se asigna el modelo a la caja de selección
         selectbox2.setSelectedIndex(0);//Se modiica el índice
         selectbox2.setItemRenderer(this);//Se renderiza el objeto
@@ -79,13 +79,13 @@ public class CTest01Controller extends SelectorComposer<Component> implements It
 
     @Listen("onSelect=#selectbox2")//Asignación de datos al título de la ventana
     public void onSelectselectbox2(Event event) {
-        CPerson Seleccion = datamodelpersona.get(selectbox2.getSelectedIndex());
+        TBLPerson Seleccion = datamodelpersona.get(selectbox2.getSelectedIndex());
         windowtest01.setTitle(Seleccion.getStrci() + " " + Seleccion.getnombre() + " " + Seleccion.getapellido() + " "
                 + Seleccion.gettelefono());
     }
 
     @Override
-    public String render(Component arg0, CPerson arg1, int arg2) throws Exception {//Renderizador
+    public String render(Component arg0, TBLPerson arg1, int arg2) throws Exception {//Renderizador
         return arg1.getnombre() + " " + arg1.getapellido() + " " + arg1.getStrci() + " " + arg1.gettelefono();
     }
 }
