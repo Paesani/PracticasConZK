@@ -15,6 +15,7 @@
             </listbox>
             <div id="buttoncontainer">
                 <button id="buttonconnection" label="Conectar"></button>
+                <button id="buttoncargar" label="Cargar"></button>
                 <button id="buttondelete" label="Borrar" style="float:right;margin-left:15px"></button>
                 <button id="buttonmodify" label="Modificar" style="float:right;margin-left:15px"></button>
                 <button id="buttonadd" label="Añadir" style="float:right;margin-left:15px"></button>

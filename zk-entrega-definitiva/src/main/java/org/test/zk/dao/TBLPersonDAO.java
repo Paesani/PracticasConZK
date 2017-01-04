@@ -48,42 +48,78 @@ public class TBLPersonDAO {
 
     public static boolean deleteData(final CDatabaseConnection databaseConnection, final String CI) {
         boolean bresultado = false;
-        final String sqlQuerry = "Delete tlbpersona Where Ci = '"+CI+"'";
+        final String sqlQuerry = "DELETE FROM tblpersona WHERE Ci ='"+CI+"'";
         try{
             if (databaseConnection != null && databaseConnection.getDbConection() != null) {
                 Statement statement = databaseConnection.getDbConection().createStatement();
                 statement.executeUpdate(sqlQuerry);
                 bresultado=true;
+                databaseConnection.getDbConection().commit();//Se hace el comit
+                statement.close();
             }
         }catch(Exception e){
+            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+                try{
+                    databaseConnection.getDbConection().rollback();
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+            }
             e.printStackTrace();
         }
         return bresultado;
     }
 
     public static boolean insertData(final CDatabaseConnection databaseConnection, final TBLPerson tblperson) {
-        boolean bresultado = false;
-        final String sqlQuerry = "'"+tblperson.getStrci() + "','" + tblperson.getnombre() + "','" + tblperson.getapellido()
+        boolean bresultado = false;//Validación
+        final String sqlQuerry = "'"+tblperson.getStrci() + "','" + tblperson.getnombre() + "','" + tblperson.getapellido()//Ahorro de tiempo
                 + "','" + tblperson.gettelefono() + "','" + tblperson.getGender() + "','" + tblperson.getCumple() + "','"
                 + tblperson.getComment() + "','root','" + LocalDate.now().toString() + "','" + LocalTime.now().toString()
                 + "',null,null,null";
         try {
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {
-                Statement statement = databaseConnection.getDbConection().createStatement();
-                statement.executeUpdate(
+            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+                Statement statement = databaseConnection.getDbConection().createStatement();//Se crea el statement para comm con mysql
+                statement.executeUpdate(//se da la orden de crear una tupla
                         "Insert Into tblpersona(Ci,Nombre,Apellido,Telefono,Genero,Cumple,Comentario,CreadoPor,CreadoFecha,CreadoHora,ActualizadoPor,ActualizadoFecha,ActualizadoHora) Values("
                         + sqlQuerry + ")");
-                databaseConnection.getDbConection().commit();
-                bresultado=true;
+                databaseConnection.getDbConection().commit();//Se hace el comit
+                bresultado=true;//Se confirma que funcionó
+                statement.close();//Se liberan recursos
             }
         } catch (Exception e) {
+            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+                try{
+                    databaseConnection.getDbConection().rollback();
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+            }
             e.printStackTrace();
         }
-        return bresultado;
+        return bresultado;//Se da respuesta
     }
 
     public static boolean updateData(final CDatabaseConnection databaseConnection, final TBLPerson tblperson) {
         boolean bresultado = false;
+        final String sqlQuerry = "Update tblpersona Set Ci='"+tblperson.getStrci()+"',Nombre='"+tblperson.getnombre()+"',Apellido='"+tblperson.getapellido()+"',Telefono='"+tblperson.gettelefono()+"',Genero="+tblperson.getGender()+",Cumple='"+tblperson.getCumple()+"',Comentario='"+tblperson.getComment()+"',ActualizadoPor='tester',ActualizadoFecha='"+LocalDate.now().toString()+"',ActualizadoHora='"+LocalTime.now().toString()+"' Where Ci ='"+tblperson.getStrci()+"'";
+        try {
+            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+                Statement statement = databaseConnection.getDbConection().createStatement();//Se crea el statement para comm con mysql
+                statement.executeUpdate(sqlQuerry);
+                databaseConnection.getDbConection().commit();//Se hace el comit
+                bresultado=true;//Se confirma que funcionó
+                statement.close();//Se liberan recursos
+            }
+        } catch (Exception e) {
+            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+                try{
+                    databaseConnection.getDbConection().rollback();
+                }catch(Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+        }
         return bresultado;
     }
 

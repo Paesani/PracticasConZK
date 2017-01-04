@@ -2,6 +2,7 @@ package org.test.zk.manager;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -32,9 +34,11 @@ public class CManagerController extends SelectorComposer<Component> {
      * 
      */
     private static final long serialVersionUID = -1591648938821366036L;
-    protected ListModelList<TBLPerson> datamodelpersona = new ListModelList<TBLPerson>();
+    protected ListModelList<TBLPerson> datamodelpersona = null; //new ListModelList<TBLPerson>();
     @Wire
     Button buttonconnection;
+    @Wire
+    Button buttoncargar;
     @Wire
     Button buttonadd;
     @Wire
@@ -45,7 +49,7 @@ public class CManagerController extends SelectorComposer<Component> {
     Listbox listboxpersons;    
     @Wire
     Window windowmanager;
-    public static final String dbkey = "database";
+    public static final String dbkey = "database";  
     protected Execution execution = Executions.getCurrent();
     protected CDatabaseConnection database = null;
     public class MyRenderer implements ListitemRenderer<TBLPerson> {    
@@ -118,7 +122,18 @@ public class CManagerController extends SelectorComposer<Component> {
             e.printStackTrace();
         }
     }
-
+    @Listen("onClick=#buttoncargar")
+    public void onClickbuttoncargar (Event event){
+        listboxpersons.setModel((ListModelList<?>) null);//Se limpia la listbox
+        Session sesion = Sessions.getCurrent();//Se recupera la sesión
+        if(sesion.getAttribute(dbkey)instanceof CDatabaseConnection){//Si se está conectado
+            database=(CDatabaseConnection) sesion.getAttribute(dbkey);//Se asigna la dirección de la bd
+            List<TBLPerson>listData=TBLPersonDAO.searchData(database);//Se llama al método de búsqueda y se asigna a la lista de persona            
+            datamodelpersona=new ListModelList<TBLPerson>(listData);//Se crea un nuevo modelo con la lista de personas
+            listboxpersons.setModel(datamodelpersona);//se le asigna al listbox
+            listboxpersons.setItemRenderer((new MyRenderer()));
+        }
+    }
     @Listen("onClick=#buttonconnection")    
     public void onClickbuttonconnection(Event event){
         Session sesion = Sessions.getCurrent();
@@ -128,6 +143,7 @@ public class CManagerController extends SelectorComposer<Component> {
                 sesion.setAttribute(dbkey, database);//Se crea la sesión
                 buttonconnection.setLabel("Desconectar");//Se cambia el contexto                
                 Messagebox.show("       ¡Conexión exitosa!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de exito
+                Events.echoEvent("onClick", buttoncargar, null);
             }else{//sino
                 Messagebox.show("       ¡Conexión fallida!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de fracaso
             }
@@ -138,6 +154,7 @@ public class CManagerController extends SelectorComposer<Component> {
              if(database.CloseConnectionToDatabase()){//Se cierra la conexión
                  database=null;
                  Messagebox.show("       ¡Conexión cerrada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+                 listboxpersons.setModel((ListModelList<?>) null);//Se limpia la listbox
              }else{
                  Messagebox.show("       ¡Fallo al cerrar conexión!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
              }
@@ -168,7 +185,7 @@ public class CManagerController extends SelectorComposer<Component> {
             arg.put("personToModify", person);
             arg.put("buttonadd", buttonadd);
             arg.put("buttonmodify", buttonmodify);
-            arg.put("ModifyModel", datamodelpersona);
+            arg.put("PersonaCi", person.getStrci());
             Window win = (Window) Executions.createComponents("/dialog.zul", null , arg);
             win.doModal();                        
         }else{ //sino
@@ -185,13 +202,16 @@ public class CManagerController extends SelectorComposer<Component> {
             datamodelpersona.add(index, personToModif);
             listboxpersons.setModel(datamodelpersona);
             listboxpersons.setItemRenderer((new MyRenderer()));
+            TBLPersonDAO.updateData(database, personToModif);
             Messagebox.show("       ¡Persona modificada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+            Events.echoEvent("onClick", buttoncargar, null);
         }else{
             TBLPersonDAO.insertData(database, personToModif);
             datamodelpersona.add(personToModif);
             listboxpersons.setModel(datamodelpersona);
             listboxpersons.setItemRenderer((new MyRenderer()));
             Messagebox.show("       ¡Lista agregada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+            Events.echoEvent("onClick", buttoncargar, null);
         }        
     }
 
@@ -218,6 +238,7 @@ public class CManagerController extends SelectorComposer<Component> {
                                     while (selecteditems.iterator().hasNext()) {//mientras haya elementos seleccionados
                                         TBLPerson persona = selecteditems.iterator().next();//se toma el elemento
                                         //selecteditems.iterator().remove();
+                                        TBLPersonDAO.deleteData(database, persona.getStrci());
                                         datamodelpersona.remove(persona);//Se destruye
                                     }//fin mientras
                                 }//fin si

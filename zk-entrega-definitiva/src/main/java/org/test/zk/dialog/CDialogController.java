@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.test.zk.dao.TBLPersonDAO;
+import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
@@ -66,8 +70,9 @@ public class CDialogController extends SelectorComposer<Component> {
     protected Button buttonadd;
     protected Button buttonmodify;
     protected Execution execution = Executions.getCurrent();
-    TBLPerson personaToModify = (TBLPerson) execution.getArg().get("personToModify");
-
+    TBLPerson personToModify = (TBLPerson) execution.getArg().get("personToModify");
+    protected CDatabaseConnection database = null;
+    public static final String dbkey = "database";
     public void doAfterCompose(Component comp) {
         try {
             super.doAfterCompose(comp);
@@ -77,7 +82,14 @@ public class CDialogController extends SelectorComposer<Component> {
             selectboxgenero.setModel(datamodel);
             selectboxgenero.setSelectedIndex(0);
             datamodel.addSelection("Femenino");
-            TBLPerson personToModify = (TBLPerson) execution.getArg().get("personToModify");
+            Session sesion = Sessions.getCurrent();
+            if(sesion.getAttribute(dbkey)instanceof CDatabaseConnection){
+                database=(CDatabaseConnection) sesion.getAttribute(dbkey);
+                if(execution.getArg().get("PersonaCi") instanceof String){
+                    personToModify = TBLPersonDAO.loadData(database, (String) execution.getArg().get("PersonaCi"));
+                }
+            }            
+            //TBLPerson personToModify = (TBLPerson) execution.getArg().get("personToModify");
             buttonmodify = (Button) execution.getArg().get("buttonmodify");// TypeCast
             buttonadd = (Button) execution.getArg().get("buttonadd");// TypeCast
             textboxci.setValue(personToModify.getStrci());
@@ -92,7 +104,7 @@ public class CDialogController extends SelectorComposer<Component> {
             if(personToModify.getCumple()!=null){
             dateboxfecha.setValue(java.sql.Date.valueOf(personToModify.getCumple()));
             }           
-            textboxcomentario.setValue(personToModify.getComment());
+            textboxcomentario.setValue(personToModify.getComment());            
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,15 +122,15 @@ public class CDialogController extends SelectorComposer<Component> {
          */
         if(dateboxfecha.getValue()!=null){
         LocalDate id = new java.sql.Date(dateboxfecha.getValue().getTime()).toLocalDate();
-        personaToModify.setci(textboxci.getValue());
-        personaToModify.setnombre(textboxnombre.getValue());
-        personaToModify.setapellido(textboxapellido.getValue());
-        personaToModify.settelefono(textboxtelefono.getValue());
-        personaToModify.setGender(selectboxgenero.getSelectedIndex());
-        personaToModify.setCumple(id);
-        personaToModify.setComment(textboxcomentario.getValue());
-        if ((!personaToModify.getStrci().equals("")) && (!personaToModify.getnombre().equals("")) && (!personaToModify.getapellido().equals("")) && !personaToModify.gettelefono().equals("") && personaToModify.getGender()>=0 && personaToModify.getCumple()!=null && !personaToModify.getComment().equals("")){
-        Events.echoEvent(new Event("onKek", buttonmodify, personaToModify));
+        personToModify.setci(textboxci.getValue());
+        personToModify.setnombre(textboxnombre.getValue());
+        personToModify.setapellido(textboxapellido.getValue());
+        personToModify.settelefono(textboxtelefono.getValue());
+        personToModify.setGender(selectboxgenero.getSelectedIndex());
+        personToModify.setCumple(id);
+        personToModify.setComment(textboxcomentario.getValue());
+        if ((!personToModify.getStrci().equals("")) && (!personToModify.getnombre().equals("")) && (!personToModify.getapellido().equals("")) && !personToModify.gettelefono().equals("") && personToModify.getGender()>=0 && personToModify.getCumple()!=null && !personToModify.getComment().equals("")){            
+        Events.echoEvent(new Event("onKek", buttonmodify, personToModify));
         windowperson.detach();                
         }else{
             Messagebox.show("       Error, uno de los campos está vacío", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
