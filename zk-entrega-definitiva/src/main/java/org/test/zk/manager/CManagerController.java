@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
@@ -99,13 +100,13 @@ public class CManagerController extends SelectorComposer<Component> {
     public void doAfterCompose(Component comp) {
         try {
             super.doAfterCompose(comp);            
-            TBLPerson persona1 = new TBLPerson("1", "Roger", "Paesani", "04129193576",1,LocalDate.parse("1995-08-28"),"Yo");
+           /* TBLPerson persona1 = new TBLPerson("1", "Roger", "Paesani", "04129193576",1,LocalDate.parse("1995-08-28"),"Yo");
             TBLPerson persona2 = new TBLPerson("2", "Chito", "Narváez", "6942069",1,LocalDate.parse("2013-02-21"),"Perro");
             TBLPerson persona3 = new TBLPerson("3", "Asunción", "Narváez", "04160980720",0,LocalDate.parse("1967-05-28"),"Mamá");
             datamodelpersona.setMultiple(true);
             datamodelpersona.add(persona1);
             datamodelpersona.add(persona2);
-            datamodelpersona.add(persona3);
+            datamodelpersona.add(persona3);*/
             listboxpersons.setModel(datamodelpersona);
             listboxpersons.setItemRenderer(new MyRenderer());
             Session sesion = Sessions.getCurrent();//Se crea variable sesion
@@ -185,7 +186,8 @@ public class CManagerController extends SelectorComposer<Component> {
             listboxpersons.setModel(datamodelpersona);
             listboxpersons.setItemRenderer((new MyRenderer()));
             Messagebox.show("       ¡Persona modificada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
-        }else{                       
+        }else{
+            TBLPersonDAO.insertData(database, personToModif);
             datamodelpersona.add(personToModif);
             listboxpersons.setModel(datamodelpersona);
             listboxpersons.setItemRenderer((new MyRenderer()));
