@@ -1,5 +1,6 @@
 package org.test.zk.manager;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import org.test.zk.dao.TBLPersonDAO;
 import org.test.zk.database.CDatabaseConnection;
+import org.test.zk.database.CDatabaseConnectionConfig;
 import org.test.zk.datamodel.TBLPerson;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
@@ -138,15 +140,21 @@ public class CManagerController extends SelectorComposer<Component> {
     public void onClickbuttonconnection(Event event){
         Session sesion = Sessions.getCurrent();
         if(database==null){//Si se va a conectar            
-                database = new CDatabaseConnection();//Se instancia            
-            if(database.makeConectionToDatabase()){//Si se logra conectar                
-                sesion.setAttribute(dbkey, database);//Se crea la sesión
-                buttonconnection.setLabel("Desconectar");//Se cambia el contexto                
-                Messagebox.show("       ¡Conexión exitosa!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de exito
-                Events.echoEvent("onClick", buttoncargar, null);
-            }else{//sino
-                Messagebox.show("       ¡Conexión fallida!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de fracaso
-            }
+            database = new CDatabaseConnection();//Se instancia     
+            CDatabaseConnectionConfig databaseconnectionconfig = new CDatabaseConnectionConfig();//Se instancia una variable de clase databaseconnectionconfig
+            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath("WEB-INF")+File.separator+"config"+File.separator;//Se asigna a una cadena la dirección la carpeta del archivo del archivo
+            if(databaseconnectionconfig.loadConfig(strRunningPath+"/database.config.xml")){//Se selecciona el archivo y se carga la configuración                                     
+                if(database.makeConectionToDatabase(databaseconnectionconfig)){//Si se logra conectar                
+                    sesion.setAttribute(dbkey, database);//Se crea la sesión
+                    buttonconnection.setLabel("Desconectar");//Se cambia el contexto                
+                    Messagebox.show("       ¡Conexión exitosa!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de exito
+                    Events.echoEvent("onClick", buttoncargar, null);
+                }else{//Sino
+                    Messagebox.show("       ¡Conexión fallida!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de fracaso
+                    }
+            }else{
+                Messagebox.show("       ¡Error al leer el archivo de configuración!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de fracaso
+                }
         }else{//Si se va a desconectar
          if (database!=null){//Si la variable no es nula
              sesion.setAttribute(dbkey, null);//Se limpia la sesión
