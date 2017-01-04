@@ -84,4 +84,9 @@ public class CDatabaseConnectionConfig implements Serializable {
     public void setPassword(String strPassword) {
         this.strPassword = strPassword;
     }
+    public boolean loadConfig(String RunningPath){        
+        boolean resultado = false;
+        
+        return resultado;
+    }
 }
