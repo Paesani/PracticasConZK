@@ -1,7 +1,10 @@
 package org.test.zk.database;
 
 import java.io.Serializable;
-import java.sql.*; 
+import java.sql.*;
+
+import commonlibs.commonclasses.CLanguage;
+import commonlibs.extendedlogger.CExtendedLogger; 
 public class CDatabaseConnection implements Serializable {
     
     private static final long serialVersionUID = -821612696326102519L;
@@ -12,45 +15,182 @@ public class CDatabaseConnection implements Serializable {
     
     //protected final String password="25639478";
     
-    protected Connection dbConnection = null;
+    protected Connection dbConnection; 
     
-    public Connection getDbConection() {
+    protected CDatabaseConnectionConfig dbConnectionConfig;
+    
+    public CDatabaseConnection() {
+        
+        dbConnection = null;
+        
+        dbConnectionConfig = null;
+        
+    }
+    
+    public Connection getDBConnection() {
+        
         return dbConnection;
+        
     }
 
-    public void setDbConection(Connection dbConection) {
-        this.dbConnection = dbConection;
-    }
-
-    public boolean makeConectionToDatabase(CDatabaseConnectionConfig databaseConnectionConfig){
-        boolean resultado = false;
-        try{            
-            if(databaseConnectionConfig!=null){
-                Class.forName(databaseConnectionConfig.getDriver());//Se inicializa el driver de mysql
-                final String databaseurl = databaseConnectionConfig.getPrefix()+databaseConnectionConfig.getHost()+":"+databaseConnectionConfig.getPort()+"/"+databaseConnectionConfig.getDatabase();
-                dbConnection=DriverManager.getConnection(databaseurl,databaseConnectionConfig.getUser(),databaseConnectionConfig.getPassword());//Se le asigna la base de datos con usuario y contraseña            
-                dbConnection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-                dbConnection.setAutoCommit(false);
-                resultado=true;
-            }
-        }catch(Exception e) {
-            e.printStackTrace();
-        }
-        return resultado;
+    public void setDBConnection( Connection dbConnection, CExtendedLogger localLogger, CLanguage localLanguage ) {
+        
+        localLogger.logWarning( "-1" , CLanguage.translateIf( localLanguage, "Set database connection manually" ) );
+        
+        this.dbConnection = dbConnection;
+        
     }
     
-    public boolean CloseConnectionToDatabase(){
-        boolean resultado = false;
-        try{
-            if(dbConnection!=null){
+    public CDatabaseConnectionConfig getDBConnectionConfig() {
+        
+        return dbConnectionConfig;
+        
+    }
+
+    public void setDBConnectionConfig( CDatabaseConnectionConfig dbConnectionConfig, CExtendedLogger localLogger, CLanguage localLanguage  ) {
+        
+        localLogger.logWarning( "-1" , CLanguage.translateIf( localLanguage, "Set database connection config manually" ) );
+
+        this.dbConnectionConfig = dbConnectionConfig;
+        
+    }
+    
+    public boolean makeConnectionToDB( CDatabaseConnectionConfig localDBConnectionConfig, CExtendedLogger localLogger, CLanguage localLanguage ) {
+        
+        boolean bResult = false;
+        
+        try {
+
+            if ( this.dbConnection == null ) {
+
+                Class.forName( localDBConnectionConfig.strDriver );
+
+                localLogger.logMessage( "1" , CLanguage.translateIf( localLanguage, "Loaded driver [%s]", localDBConnectionConfig.strDriver ) );
+                
+                String strDatabaseURL = localDBConnectionConfig.strPrefix + localDBConnectionConfig.strHost + ":" + localDBConnectionConfig.strPort + "/" + localDBConnectionConfig.strDatabase;
+
+                localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Try to connecting to [%s] user [%s] password [%s]", strDatabaseURL, localDBConnectionConfig.strUser, localDBConnectionConfig.strPassword ) );
+
+                Connection localDBConnection = DriverManager.getConnection( strDatabaseURL, localDBConnectionConfig.strUser, localDBConnectionConfig.strPassword );
+                //DBConnection = DriverManager.getConnection( "jdbc:mysql://localhost:3306/" + strDatabase, strDBUserName, strDBPassword );
+
+                localDBConnection.setTransactionIsolation( Connection.TRANSACTION_READ_COMMITTED );
+                
+                localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Connected to [%s] user [%s] password [%s]", strDatabaseURL, localDBConnectionConfig.strUser, localDBConnectionConfig.strPassword ) );
+
+                bResult = localDBConnection != null && localDBConnection.isValid( 5 );
+                
+                if ( bResult ) {
+                 
+                    localDBConnection.setAutoCommit( false );
+                                        
+                    
+                    localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Connection auto commit set to false" ) );
+
+                    this.dbConnection = localDBConnection; //Save the database connection to this instance object
+                    
+                    this.dbConnectionConfig = localDBConnectionConfig; //Save the config for the connection to this instance object
+
+                    localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Connection checked" ) );
+                    
+                }    
+                else {
+                
+                    localDBConnection.close();
+                    
+                    localDBConnection = null;
+
+                    localLogger.logError( "-1001" , CLanguage.translateIf( localLanguage, "Failed check the connection" ) );
+                
+                }   
+
+            }
+            else {
+                
+                localLogger.logWarning( "-1" , CLanguage.translateIf( localLanguage, "The database is already initiated" ) );
+                
+            }
+            
+        }
+        catch ( Exception Ex ) {
+
+            if ( localLogger != null ) {
+                
+                localLogger.logException( "-1021" , Ex.getMessage(), Ex );
+                
+            }
+            
+        }       
+        
+        return bResult;
+        
+    }
+    
+    public boolean closeConnectionToDB( CExtendedLogger localLogger, CLanguage localLanguage ) {
+        
+        boolean bResult = false;
+        
+        try {
+
+            localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Trying to close the connection to the database" ) );
+
+            if ( dbConnection != null ) {
+                
                 dbConnection.close();
-                dbConnection=null;
-                resultado=true;
+                
+                localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Database connection closed successfully" ) );
+                
             }
-        }catch(Exception e){
-            e.printStackTrace();
+            else {
+                
+                localLogger.logWarning( "-1" , CLanguage.translateIf( localLanguage, "The connection variable is null" ) );
+                
+            }
+
+            dbConnection = null;
+            dbConnectionConfig = null;
+            
+            localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Set to null connection and conection config variable" ) );
+
+            bResult = true;
+        
         }
-        return resultado;
+        catch ( Exception Ex ) {
+
+            if ( localLogger != null ) {
+                
+                localLogger.logException( "-1021" , Ex.getMessage(), Ex );
+                
+            }
+
+        }       
+
+        return bResult;
+            
     }
     
+    public boolean isValid( CExtendedLogger localLogger, CLanguage localLanguage ) {
+        
+        boolean bResult = false;
+        
+        try {
+            
+            localLogger.logMessage( "1", CLanguage.translateIf( localLanguage, "Checking for database connection is valid" ) );
+            
+            bResult = dbConnection.isValid( 5 ); //wait max for 5 seconds
+            
+        } 
+        catch ( Exception Ex ) {
+            
+            if ( localLogger != null ) {
+                
+                localLogger.logException( "-1021" , Ex.getMessage(), Ex );
+                
+            }
+            
+        }
+        
+        return bResult;
+        
+    }
 }

@@ -15,8 +15,8 @@ public class TBLPersonDAO {
     public static TBLPerson loadData(final CDatabaseConnection databaseConnection, final String CI) {
         TBLPerson resultado = null;
         try {
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {
-                Statement statement = databaseConnection.getDbConection().createStatement();
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {
+                Statement statement = databaseConnection.getDBConnection().createStatement();
                 ResultSet rs = statement.executeQuery("Select * from tblpersona Where Ci='"+CI+"'");
                 if (rs.next()) {
                     resultado = new TBLPerson();
@@ -50,17 +50,17 @@ public class TBLPersonDAO {
         boolean bresultado = false;
         final String sqlQuerry = "DELETE FROM tblpersona WHERE Ci ='"+CI+"'";
         try{
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {
-                Statement statement = databaseConnection.getDbConection().createStatement();
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {
+                Statement statement = databaseConnection.getDBConnection().createStatement();
                 statement.executeUpdate(sqlQuerry);
                 bresultado=true;
-                databaseConnection.getDbConection().commit();//Se hace el comit
+                databaseConnection.getDBConnection().commit();//Se hace el comit
                 statement.close();
             }
         }catch(Exception e){
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {//Si se está conectado a la bd
                 try{
-                    databaseConnection.getDbConection().rollback();
+                    databaseConnection.getDBConnection().rollback();
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
@@ -77,19 +77,19 @@ public class TBLPersonDAO {
                 + tblperson.getComment() + "','root','" + LocalDate.now().toString() + "','" + LocalTime.now().toString()
                 + "',null,null,null";
         try {
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
-                Statement statement = databaseConnection.getDbConection().createStatement();//Se crea el statement para comm con mysql
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {//Si se está conectado a la bd
+                Statement statement = databaseConnection.getDBConnection().createStatement();//Se crea el statement para comm con mysql
                 statement.executeUpdate(//se da la orden de crear una tupla
                         "Insert Into tblpersona(Ci,Nombre,Apellido,Telefono,Genero,Cumple,Comentario,CreadoPor,CreadoFecha,CreadoHora,ActualizadoPor,ActualizadoFecha,ActualizadoHora) Values("
                         + sqlQuerry + ")");
-                databaseConnection.getDbConection().commit();//Se hace el comit
+                databaseConnection.getDBConnection().commit();//Se hace el comit
                 bresultado=true;//Se confirma que funcionó
                 statement.close();//Se liberan recursos
             }
         } catch (Exception e) {
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {//Si se está conectado a la bd
                 try{
-                    databaseConnection.getDbConection().rollback();
+                    databaseConnection.getDBConnection().rollback();
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
@@ -103,17 +103,17 @@ public class TBLPersonDAO {
         boolean bresultado = false;
         final String sqlQuerry = "Update tblpersona Set Ci='"+tblperson.getStrci()+"',Nombre='"+tblperson.getnombre()+"',Apellido='"+tblperson.getapellido()+"',Telefono='"+tblperson.gettelefono()+"',Genero="+tblperson.getGender()+",Cumple='"+tblperson.getCumple()+"',Comentario='"+tblperson.getComment()+"',ActualizadoPor='tester',ActualizadoFecha='"+LocalDate.now().toString()+"',ActualizadoHora='"+LocalTime.now().toString()+"' Where Ci ='"+tblperson.getStrci()+"'";
         try {
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
-                Statement statement = databaseConnection.getDbConection().createStatement();//Se crea el statement para comm con mysql
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {//Si se está conectado a la bd
+                Statement statement = databaseConnection.getDBConnection().createStatement();//Se crea el statement para comm con mysql
                 statement.executeUpdate(sqlQuerry);
-                databaseConnection.getDbConection().commit();//Se hace el comit
+                databaseConnection.getDBConnection().commit();//Se hace el comit
                 bresultado=true;//Se confirma que funcionó
                 statement.close();//Se liberan recursos
             }
         } catch (Exception e) {
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {//Si se está conectado a la bd
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {//Si se está conectado a la bd
                 try{
-                    databaseConnection.getDbConection().rollback();
+                    databaseConnection.getDBConnection().rollback();
                 }catch(Exception ex){
                     ex.printStackTrace();
                 }
@@ -126,8 +126,8 @@ public class TBLPersonDAO {
     public static List<TBLPerson> searchData(final CDatabaseConnection databaseConnection) {
         List<TBLPerson> resultado = new ArrayList<TBLPerson>();
         try {
-            if (databaseConnection != null && databaseConnection.getDbConection() != null) {
-                Statement statement = databaseConnection.getDbConection().createStatement();
+            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {
+                Statement statement = databaseConnection.getDBConnection().createStatement();
                 ResultSet rs = statement.executeQuery("Select * from tblpersona");
                 while (rs.next()) {
                     TBLPerson tblperson = new TBLPerson();

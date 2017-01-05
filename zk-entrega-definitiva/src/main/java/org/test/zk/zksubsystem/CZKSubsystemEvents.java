@@ -1,5 +1,6 @@
 package org.test.zk.zksubsystem;
 
+import java.io.File;
 import java.util.List;
 
 import org.zkoss.zk.ui.Desktop;
@@ -68,7 +69,7 @@ public class CZKSubsystemEvents implements DesktopInit, DesktopCleanup, SessionI
         System.out.println("Web App Init");
         try {
             
-            String strRunningPath = webApp.getRealPath( ConstantsCommonClasses._WEB_INF_Dir ) + "/";
+            String strRunningPath = webApp.getRealPath( ConstantsCommonClasses._WEB_INF_Dir )+File.separator;
 
             //Se encarga de leer el archivo de configuración logger.config.xml
             CExtendedConfigLogger configLogger = new CExtendedConfigLogger(); //Esta clase viene de mis librerías que importamos en la estructura del proyecto

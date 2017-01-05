@@ -31,6 +31,9 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import commonlibs.commonclasses.ConstantsCommonClasses;
+import commonlibs.extendedlogger.CExtendedLogger;
+
 public class CManagerController extends SelectorComposer<Component> {
 
     /**
@@ -143,9 +146,13 @@ public class CManagerController extends SelectorComposer<Component> {
         if(database==null){//Si se va a conectar            
             database = new CDatabaseConnection();//Se instancia     
             CDatabaseConnectionConfig databaseconnectionconfig = new CDatabaseConnectionConfig();//Se instancia una variable de clase databaseconnectionconfig
-            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath(CConstantes.WEB_INF_Dir)+File.separator+CConstantes.Config_Dir+File.separator;//Se asigna a una cadena la dirección la carpeta del archivo del archivo
-            if(databaseconnectionconfig.loadConfig(strRunningPath+"/"+CConstantes.Database_Connection_Config_File_Name)){//Se selecciona el archivo y se carga la configuración                                     
-                if(database.makeConectionToDatabase(databaseconnectionconfig)){//Si se logra conectar                
+            String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath(CConstantes.WEB_INF_Dir)+File.separator+CConstantes.Config_Dir+File.separator; //Se asigna a una cadena la dirección la carpeta del archivo del archivo
+            
+            CExtendedLogger webAppLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(ConstantsCommonClasses._Webapp_Logger_App_Attribute_Key);
+            
+            if(databaseconnectionconfig.loadConfig(strRunningPath+File.separator+CConstantes.Database_Connection_Config_File_Name,webAppLogger,null)){//Se selecciona el archivo y se carga la configuración                                     
+                if(database.makeConnectionToDB( databaseconnectionconfig, webAppLogger, null)){//Si se logra conectar
+                    database.setDBConnectionConfig(databaseconnectionconfig, webAppLogger, null);
                     sesion.setAttribute(CConstantes.Database_Connection_Session_Key, database);//Se crea la sesión
                     buttonconnection.setLabel("Desconectar");//Se cambia el contexto                
                     Messagebox.show("       ¡Conexión exitosa!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de exito
@@ -157,10 +164,11 @@ public class CManagerController extends SelectorComposer<Component> {
                 Messagebox.show("       ¡Error al leer el archivo de configuración!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de fracaso
                 }
         }else{//Si se va a desconectar
-         if (database!=null){//Si la variable no es nula
+            if (database!=null){//Si la variable no es nula
              sesion.setAttribute(CConstantes.Database_Connection_Session_Key, null);//Se limpia la sesión
              buttonconnection.setLabel("Conectar");//Se cambia el contexto
-             if(database.CloseConnectionToDatabase()){//Se cierra la conexión
+             CExtendedLogger webAppLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(ConstantsCommonClasses._Webapp_Logger_App_Attribute_Key);
+             if(database.closeConnectionToDB(webAppLogger, null)){//Se cierra la conexión
                  database=null;
                  Messagebox.show("       ¡Conexión cerrada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
                  listboxpersons.setModel((ListModelList<?>) null);//Se limpia la listbox

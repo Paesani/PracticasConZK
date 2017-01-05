@@ -30,7 +30,7 @@ public interface ConstantsCommonClasses {
 
     public static final String _System_Dir = "system" + File.separator;
 
-    public static final String _WEB_INF_Dir = "WEB-INF" + File.separator;
+    public static final String _WEB_INF_Dir = "WEB-INF/";
 
     public static final String _Config_Dir = "config" + File.separator;
     
