@@ -193,7 +193,7 @@ public class CManagerController extends SelectorComposer<Component> {
         Window win = (Window) Executions.createComponents("/dialog.zul", null,arg);
         win.doModal();
     }    
-    @Listen("onClick=#buttonmodify")
+    @Listen("onClick=#buttonmodify")//
     public void onClickbuttonmodify(Event event) {
         Set<TBLPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
         if ((selecteditems != null) && (datamodelpersona.getSelection().size() > 0)) {//Si hay elementos
