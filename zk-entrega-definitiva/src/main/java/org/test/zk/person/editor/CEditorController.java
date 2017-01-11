@@ -1,4 +1,4 @@
-package org.test.zk.dialog;
+package org.test.zk.person.editor;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import org.zkoss.zul.Selectbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class CDialogController extends SelectorComposer<Component> {
+public class CEditorController extends SelectorComposer<Component> {
 
     /**
      * 

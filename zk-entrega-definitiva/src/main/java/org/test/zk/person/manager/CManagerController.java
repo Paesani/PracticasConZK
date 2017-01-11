@@ -1,4 +1,4 @@
-package org.test.zk.manager;
+package org.test.zk.person.manager;
 
 import java.io.File;
 import java.time.LocalDate;
@@ -190,11 +190,12 @@ public class CManagerController extends SelectorComposer<Component> {
         arg.put("buttonadd", buttonadd);
         arg.put("buttonmodify", buttonmodify);
         arg.put("ModifyModel", datamodelpersona);
-        Window win = (Window) Executions.createComponents("/dialog.zul", null,arg);
+        Window win = (Window) Executions.createComponents("/views/person/editor/editor.zul", null,arg);
         win.doModal();
     }    
     @Listen("onClick=#buttonmodify")//
     public void onClickbuttonmodify(Event event) {
+        if (listboxpersons.getSelectedIndex()>=0){
         Set<TBLPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
         if ((selecteditems != null) && (datamodelpersona.getSelection().size() > 0)) {//Si hay elementos
             TBLPerson person = selecteditems.iterator().next();
@@ -203,9 +204,13 @@ public class CManagerController extends SelectorComposer<Component> {
             arg.put("buttonadd", buttonadd);
             arg.put("buttonmodify", buttonmodify);
             arg.put("PersonaCi", person.getStrci());
-            Window win = (Window) Executions.createComponents("/dialog.zul", null , arg);
+            Window win = (Window) Executions.createComponents("/views/person/editor/editor.zul", null , arg);
             win.doModal();                        
         }else{ //sino
+            Messagebox.show("       Error, no hay selección.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+            //Se da un mensaje de error
+        }
+        }else{
             Messagebox.show("       Error, no hay selección.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
             //Se da un mensaje de error
         }
@@ -235,6 +240,7 @@ public class CManagerController extends SelectorComposer<Component> {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Listen("onClick=#buttondelete")
     public void onClickbuttondelete(Event event) {//Si se hace click en el botón borrar
+        if (listboxpersons.getSelectedIndex()>=0){
         Set<TBLPerson> selecteditems = datamodelpersona.getSelection();//Se crea una lista de personas con los elementos seleccionados
         if ((selecteditems != null) && (datamodelpersona.getSelection().size() > 0)) {//Si hay elementos
             String buffer = null;//Se crea un buffer
@@ -264,6 +270,9 @@ public class CManagerController extends SelectorComposer<Component> {
             }else{ //sino
             Messagebox.show("       Error, no hay selección.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
             //Se da un mensaje de error
-        }
+        }       
+    }else{
+        Messagebox.show("       Error, no hay selección.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
+    }
     }
 }   
