@@ -26,6 +26,10 @@ import org.zkoss.zul.Selectbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import commonlibs.commonclasses.CLanguage;
+import commonlibs.commonclasses.ConstantsCommonClasses;
+import commonlibs.extendedlogger.CExtendedLogger;
+
 public class CEditorController extends SelectorComposer<Component> {
 
     /**
@@ -66,6 +70,8 @@ public class CEditorController extends SelectorComposer<Component> {
     Button buttonguardar;
     @Wire
     Button buttoncancelar;
+    protected CExtendedLogger controllerLogger=null;
+    protected CLanguage controllerLanguage=null;
     protected ListModelList<String> datamodel = new ListModelList<String>();
     protected Button buttonadd;
     protected Button buttonmodify;
@@ -76,6 +82,7 @@ public class CEditorController extends SelectorComposer<Component> {
     public void doAfterCompose(Component comp) {
         try {
             super.doAfterCompose(comp);
+            controllerLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(ConstantsCommonClasses._Webapp_Logger_App_Attribute_Key);
             dateboxfecha.setFormat("dd-MM-yyyy");
             datamodel.add("Femenino");
             datamodel.add("Masculino");
@@ -86,7 +93,7 @@ public class CEditorController extends SelectorComposer<Component> {
             if(sesion.getAttribute(dbkey)instanceof CDatabaseConnection){
                 database=(CDatabaseConnection) sesion.getAttribute(dbkey);
                 if(execution.getArg().get("PersonaCi") instanceof String){
-                    personToModify = TBLPersonDAO.loadData(database, (String) execution.getArg().get("PersonaCi"));
+                    personToModify = TBLPersonDAO.loadData(database, (String) execution.getArg().get("PersonaCi"),controllerLogger,controllerLanguage);
                 }
             }            
             //TBLPerson personToModify = (TBLPerson) execution.getArg().get("personToModify");
@@ -106,7 +113,10 @@ public class CEditorController extends SelectorComposer<Component> {
             }           
             textboxcomentario.setValue(personToModify.getComment());            
         } catch (Exception e) {
-            e.printStackTrace();
+            if ( controllerLogger != null ){   
+                controllerLogger.logException( "-1021", e.getMessage(), e );        
+            
+        }
         }
     }
 

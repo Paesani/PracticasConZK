@@ -31,6 +31,7 @@ import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
+import commonlibs.commonclasses.CLanguage;
 import commonlibs.commonclasses.ConstantsCommonClasses;
 import commonlibs.extendedlogger.CExtendedLogger;
 
@@ -58,6 +59,8 @@ public class CManagerController extends SelectorComposer<Component> {
     //public static final String dbkey = "database";  
     protected Execution execution = Executions.getCurrent();
     protected CDatabaseConnection database = null;
+    protected CExtendedLogger controllerLogger=null;
+    protected CLanguage controllerLanguage=null;
     public class MyRenderer implements ListitemRenderer<TBLPerson> {    
         @Override
         public void render(Listitem listitem, TBLPerson persona, int arg2) throws Exception {
@@ -118,8 +121,9 @@ public class CManagerController extends SelectorComposer<Component> {
             datamodelpersona.add(persona2);
             datamodelpersona.add(persona3);*/
             listboxpersons.setModel(datamodelpersona);
-            listboxpersons.setItemRenderer(new MyRenderer());
+            listboxpersons.setItemRenderer(new MyRenderer());            
             Session sesion = Sessions.getCurrent();//Se crea variable sesion
+            controllerLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(ConstantsCommonClasses._Webapp_Logger_App_Attribute_Key);
             if(sesion.getAttribute(CConstantes.Database_Connection_Session_Key)instanceof CDatabaseConnection){
                 database=(CDatabaseConnection) sesion.getAttribute(CConstantes.Database_Connection_Session_Key);
                 buttonconnection.setLabel("Desconectar");
@@ -134,7 +138,7 @@ public class CManagerController extends SelectorComposer<Component> {
         Session sesion = Sessions.getCurrent();//Se recupera la sesión
         if(sesion.getAttribute(CConstantes.Database_Connection_Session_Key)instanceof CDatabaseConnection){//Si se está conectado
             database=(CDatabaseConnection) sesion.getAttribute(CConstantes.Database_Connection_Session_Key);//Se asigna la dirección de la bd
-            List<TBLPerson>listData=TBLPersonDAO.searchData(database);//Se llama al método de búsqueda y se asigna a la lista de persona            
+            List<TBLPerson>listData=TBLPersonDAO.searchData(database,controllerLogger, controllerLanguage);//Se llama al método de búsqueda y se asigna a la lista de persona            
             datamodelpersona=new ListModelList<TBLPerson>(listData);//Se crea un nuevo modelo con la lista de personas
             listboxpersons.setModel(datamodelpersona);//se le asigna al listbox
             listboxpersons.setItemRenderer((new MyRenderer()));
@@ -148,11 +152,11 @@ public class CManagerController extends SelectorComposer<Component> {
             CDatabaseConnectionConfig databaseconnectionconfig = new CDatabaseConnectionConfig();//Se instancia una variable de clase databaseconnectionconfig
             String strRunningPath = Sessions.getCurrent().getWebApp().getRealPath(CConstantes.WEB_INF_Dir)+File.separator+CConstantes.Config_Dir+File.separator; //Se asigna a una cadena la dirección la carpeta del archivo del archivo
             
-            CExtendedLogger webAppLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(ConstantsCommonClasses._Webapp_Logger_App_Attribute_Key);
             
-            if(databaseconnectionconfig.loadConfig(strRunningPath+File.separator+CConstantes.Database_Connection_Config_File_Name,webAppLogger,null)){//Se selecciona el archivo y se carga la configuración                                     
-                if(database.makeConnectionToDB( databaseconnectionconfig, webAppLogger, null)){//Si se logra conectar
-                    database.setDBConnectionConfig(databaseconnectionconfig, webAppLogger, null);
+            
+            if(databaseconnectionconfig.loadConfig(strRunningPath+File.separator+CConstantes.Database_Connection_Config_File_Name,controllerLogger,controllerLanguage)){//Se selecciona el archivo y se carga la configuración                                     
+                if(database.makeConnectionToDB( databaseconnectionconfig, controllerLogger, controllerLanguage)){//Si se logra conectar
+                    database.setDBConnectionConfig(databaseconnectionconfig, controllerLogger, controllerLanguage);
                     sesion.setAttribute(CConstantes.Database_Connection_Session_Key, database);//Se crea la sesión
                     buttonconnection.setLabel("Desconectar");//Se cambia el contexto                
                     Messagebox.show("       ¡Conexión exitosa!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);//Mensaje de exito
@@ -167,8 +171,8 @@ public class CManagerController extends SelectorComposer<Component> {
             if (database!=null){//Si la variable no es nula
              sesion.setAttribute(CConstantes.Database_Connection_Session_Key, null);//Se limpia la sesión
              buttonconnection.setLabel("Conectar");//Se cambia el contexto
-             CExtendedLogger webAppLogger = (CExtendedLogger) Sessions.getCurrent().getWebApp().getAttribute(ConstantsCommonClasses._Webapp_Logger_App_Attribute_Key);
-             if(database.closeConnectionToDB(webAppLogger, null)){//Se cierra la conexión
+             
+             if(database.closeConnectionToDB(controllerLogger, controllerLanguage)){//Se cierra la conexión
                  database=null;
                  Messagebox.show("       ¡Conexión cerrada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
                  listboxpersons.setModel((ListModelList<?>) null);//Se limpia la listbox
@@ -224,11 +228,11 @@ public class CManagerController extends SelectorComposer<Component> {
             datamodelpersona.add(index, personToModif);
             listboxpersons.setModel(datamodelpersona);
             listboxpersons.setItemRenderer((new MyRenderer()));
-            TBLPersonDAO.updateData(database, personToModif);
+            TBLPersonDAO.updateData(database, personToModif,controllerLogger, controllerLanguage);
             Messagebox.show("       ¡Persona modificada!.", "Aceptar", Messagebox.OK, Messagebox.EXCLAMATION);
             Events.echoEvent("onClick", buttoncargar, null);
         }else{
-            TBLPersonDAO.insertData(database, personToModif);
+            TBLPersonDAO.insertData(database, personToModif,controllerLogger, controllerLanguage);
             datamodelpersona.add(personToModif);
             listboxpersons.setModel(datamodelpersona);
             listboxpersons.setItemRenderer((new MyRenderer()));
@@ -261,7 +265,7 @@ public class CManagerController extends SelectorComposer<Component> {
                                     while (selecteditems.iterator().hasNext()) {//mientras haya elementos seleccionados
                                         TBLPerson persona = selecteditems.iterator().next();//se toma el elemento
                                         //selecteditems.iterator().remove();
-                                        TBLPersonDAO.deleteData(database, persona.getStrci());
+                                        TBLPersonDAO.deleteData(database, persona.getStrci(),controllerLogger,controllerLanguage);
                                         datamodelpersona.remove(persona);//Se destruye
                                     }//fin mientras
                                 }//fin si

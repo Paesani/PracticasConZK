@@ -11,8 +11,11 @@ import java.util.List;
 import org.test.zk.database.CDatabaseConnection;
 import org.test.zk.datamodel.TBLPerson;
 
+import commonlibs.commonclasses.CLanguage;
+import commonlibs.extendedlogger.CExtendedLogger;
+
 public class TBLPersonDAO {
-    public static TBLPerson loadData(final CDatabaseConnection databaseConnection, final String CI) {
+    public static TBLPerson loadData(final CDatabaseConnection databaseConnection, final String CI,CExtendedLogger localLogger, CLanguage localLanguage) {
         TBLPerson resultado = null;
         try {
             if (databaseConnection != null && databaseConnection.getDBConnection() != null) {
@@ -41,12 +44,14 @@ public class TBLPersonDAO {
                 // NO SE CIERRA LA CONEXIÓN
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            if ( localLogger != null )   
+                localLogger.logException( "-1021", e.getMessage(), e );     
         }
         return resultado;
     }
 
-    public static boolean deleteData(final CDatabaseConnection databaseConnection, final String CI) {
+    public static boolean deleteData(final CDatabaseConnection databaseConnection, final String CI,CExtendedLogger localLogger, CLanguage localLanguage) {
         boolean bresultado = false;
         final String sqlQuerry = "DELETE FROM tblpersona WHERE Ci ='"+CI+"'";
         try{
@@ -57,20 +62,34 @@ public class TBLPersonDAO {
                 databaseConnection.getDBConnection().commit();//Se hace el comit
                 statement.close();
             }
-        }catch(Exception e){
-            if (databaseConnection != null && databaseConnection.getDBConnection() != null) {//Si se está conectado a la bd
-                try{
-                    databaseConnection.getDBConnection().rollback();
-                }catch(Exception ex){
-                    ex.printStackTrace();
-                }
+        }catch ( Exception ex ) {
+
+                if ( databaseConnection != null && databaseConnection.getDBConnection() != null ) {
+
+                    try {
+                       
+                        databaseConnection.getDBConnection().rollback(); //En caso de error rollback todas las operaciones anteriores.
+                         
+                    }
+                    catch ( Exception e ) {
+                        
+                        if ( localLogger != null )   
+                            localLogger.logException( "-1021", e.getMessage(), e );        
+                        //e.printStackTrace(); //Podemos tenes problemas en el rollback nos exige un try catch
+                        
+                    } 
+                    
+                }    
+                
+                if ( localLogger != null )   
+                    localLogger.logException( "-1022", ex.getMessage(), ex );        
+                
             }
-            e.printStackTrace();
-        }
         return bresultado;
     }
+        
 
-    public static boolean insertData(final CDatabaseConnection databaseConnection, final TBLPerson tblperson) {
+    public static boolean insertData(final CDatabaseConnection databaseConnection, final TBLPerson tblperson,CExtendedLogger localLogger, CLanguage localLanguage) {
         boolean bresultado = false;//Validación
         final String sqlQuerry = "'"+tblperson.getStrci() + "','" + tblperson.getnombre() + "','" + tblperson.getapellido()//Ahorro de tiempo
                 + "','" + tblperson.gettelefono() + "','" + tblperson.getGender() + "','" + tblperson.getCumple() + "','"
@@ -91,15 +110,23 @@ public class TBLPersonDAO {
                 try{
                     databaseConnection.getDBConnection().rollback();
                 }catch(Exception ex){
-                    ex.printStackTrace();
+                    if ( localLogger != null )   
+                        localLogger.logException( "-1021", ex.getMessage(), ex );        
+                    //e.printStackTrace(); //Podemos tenes problemas en el rollback nos exige un try catch
+                    
+                } 
                 }
-            }
-            e.printStackTrace();
+            
+            
+            if ( localLogger != null )   {
+                localLogger.logException( "-1022", e.getMessage(), e );        
+            
+        }
         }
         return bresultado;//Se da respuesta
     }
 
-    public static boolean updateData(final CDatabaseConnection databaseConnection, final TBLPerson tblperson) {
+    public static boolean updateData(final CDatabaseConnection databaseConnection, final TBLPerson tblperson,CExtendedLogger localLogger, CLanguage localLanguage) {
         boolean bresultado = false;
         final String sqlQuerry = "Update tblpersona Set Ci='"+tblperson.getStrci()+"',Nombre='"+tblperson.getnombre()+"',Apellido='"+tblperson.getapellido()+"',Telefono='"+tblperson.gettelefono()+"',Genero="+tblperson.getGender()+",Cumple='"+tblperson.getCumple()+"',Comentario='"+tblperson.getComment()+"',ActualizadoPor='tester',ActualizadoFecha='"+LocalDate.now().toString()+"',ActualizadoHora='"+LocalTime.now().toString()+"' Where Ci ='"+tblperson.getStrci()+"'";
         try {
@@ -114,16 +141,25 @@ public class TBLPersonDAO {
             if (databaseConnection != null && databaseConnection.getDBConnection() != null) {//Si se está conectado a la bd
                 try{
                     databaseConnection.getDBConnection().rollback();
-                }catch(Exception ex){
-                    ex.printStackTrace();
                 }
-            }
-            e.printStackTrace();
+                catch ( Exception ex ) {
+                    
+                    if ( localLogger != null )   
+                        localLogger.logException( "-1021", ex.getMessage(), ex );        
+                    //e.printStackTrace(); //Podemos tenes problemas en el rollback nos exige un try catch
+                    
+                } 
+                
+            }    
+            
+            if ( localLogger != null )   
+                localLogger.logException( "-1022", e.getMessage(), e );        
+            
         }
         return bresultado;
     }
 
-    public static List<TBLPerson> searchData(final CDatabaseConnection databaseConnection) {
+    public static List<TBLPerson> searchData(final CDatabaseConnection databaseConnection,CExtendedLogger localLogger, CLanguage localLanguage) {
         List<TBLPerson> resultado = new ArrayList<TBLPerson>();
         try {
             if (databaseConnection != null && databaseConnection.getDBConnection() != null) {
@@ -154,7 +190,9 @@ public class TBLPersonDAO {
                 // NO SE CIERRA LA CONEXIÓN
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            if ( localLogger != null )   
+                localLogger.logException( "-1021", e.getMessage(), e );
         }
         return resultado;
     }

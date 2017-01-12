@@ -37,12 +37,12 @@ public static final String _Logger_Config_File_Name = "logger.config.xml";
 public static final String _Logger_Config_Production_File_Name = "logger.production.config.xml";
 
 public static final String _User_Unknown = "unknown@unknown.com";
-
+public static final String _Operator_Credential_Session_Key = "operatorCredential";
 public static final String _DB_Connection_Session_Key = "dbConnection";
 public static final String _User_Credential_Session_Key = "userCredential";
 public static final String _Login_Date_Time_Session_Key = "loginDateTime";
 public static final String _Log_Path_Session_Key = "logPath";
-
+public static final String _Logged_Session_Loggers="loggedSessionLoggers";
 public static final String _Webapp_Logger_App_Attribute_Key = "webAppLogger";
 public static final String _Webapp_Logger_Name = "webapplogger";
 public static final String _Webapp_Logger_File_Log = "webapplogger.log";
